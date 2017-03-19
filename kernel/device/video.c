@@ -11,11 +11,11 @@
 #define SLOW
 
 #ifdef TOOSLOW
-	#define PARTIAL_UPDATE
-	#define INTERLACE
+#define PARTIAL_UPDATE
+#define INTERLACE
 #else
 #ifdef SLOW
-	#define PARTIAL_UPDATE
+#define PARTIAL_UPDATE
 #endif
 #endif
 
@@ -26,7 +26,8 @@ static uint8_t vref[SCR_SIZE];
 #endif
 
 void
-prepare_buffer(void) {
+prepare_buffer(void)
+{
 #ifdef PARTIAL_UPDATE
 	memcpy(vref, vbuf, SCR_SIZE);
 #endif
@@ -35,7 +36,8 @@ prepare_buffer(void) {
 }
 
 void
-display_buffer(void) {
+display_buffer(void)
+{
 #ifdef PARTIAL_UPDATE
 	int i;
 #ifdef INTERLACE
@@ -53,9 +55,8 @@ display_buffer(void) {
 			continue;
 		}
 #endif
-		if (buf[i] != ref[i]) {
+		if (buf[i] != ref[i])
 			mem[i] = buf[i];
-		}
 	}
 #else
 	vmem = VMEM_ADDR;
@@ -64,24 +65,34 @@ display_buffer(void) {
 }
 
 static inline void
-draw_character(char ch, int x, int y, int color) {
+draw_character(char ch, int x, int y, int color)
+{
 	int i, j;
 	assert((ch & 0x80) == 0);
 	char *p = font8x8_basic[(int)ch];
-	for (i = 0; i < 8; i ++) 
-		for (j = 0; j < 8; j ++) 
+	for (i = 0; i < 8; i ++)
+		for (j = 0; j < 8; j ++)
 			if ((p[i] >> j) & 1)
 				draw_pixel(x + i, y + j, color);
 }
 
 void
-draw_string(const char *str, int x, int y, int color) {
+draw_string(const char *str, int x, int y, int color)
+{
 	while (*str) {
 		draw_character(*str ++, x, y, color);
 		if (y + 8 >= SCR_WIDTH) {
 			x += 8; y = 0;
-		} else {
+		} else
 			y += 8;
-		}
 	}
+}
+
+void
+user_blue_screen()
+{
+	static char buf[256] = "treminate normally";
+	memset(vmem, 1, SCR_SIZE);
+	draw_string(buf, 0, 0, 15);
+	display_buffer();
 }

@@ -87,7 +87,7 @@ LINKLIST_DEF_FI	include/adt/linklist.h	31;"	d
 LINKLIST_IMPL	include/adt/linklist.h	43;"	d
 NPDENTRIES	include/mmu.h	45;"	d
 NPTENTRIES	include/mmu.h	46;"	d
-NR_IRQ	include/x86/cpu.h	34;"	d
+NR_IRQ	include/x86/cpu.h	43;"	d
 NR_PALETTE_ENTRY	kernel/device/palette.c	10;"	d	file:
 NR_SEGMENTS	include/mmu.h	137;"	d
 NR_SEGMENTS	include/x86/memory.h	7;"	d
@@ -198,11 +198,11 @@ assert	include/assert.h	7;"	d
 blue_screen	lib/assert.c	/^blue_screen(const char *file, int line) {$/;"	f	file:
 bool	include/types.h	/^typedef int bool;$/;"	t
 bootmain	boot/main.c	/^bootmain(void) {$/;"	f
-disable_interrupt	include/x86/cpu.h	/^disable_interrupt(void) {$/;"	f
-display_buffer	kernel/device/video.c	/^display_buffer(void) {$/;"	f
-draw_character	kernel/device/video.c	/^draw_character(char ch, int x, int y, int color) {$/;"	f	file:
-draw_pixel	include/device/video.h	/^draw_pixel(int x, int y, int color) {$/;"	f
-draw_string	kernel/device/video.c	/^draw_string(const char *str, int x, int y, int color) {$/;"	f
+disable_interrupt	include/x86/cpu.h	/^disable_interrupt(void)$/;"	f
+display_buffer	kernel/device/video.c	/^display_buffer(void)$/;"	f
+draw_character	kernel/device/video.c	/^draw_character(char ch, int x, int y, int color)$/;"	f	file:
+draw_pixel	include/device/video.h	/^draw_pixel(int x, int y, int color)$/;"	f
+draw_string	kernel/device/video.c	/^draw_string(const char *str, int x, int y, int color)$/;"	f
 eax	include/mmu.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
 eax	include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
 ebp	include/mmu.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
@@ -217,7 +217,7 @@ edx	include/mmu.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	stru
 edx	include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
 ehsize	boot/boot.h	/^	unsigned short ehsize;$/;"	m	struct:ELFHeader
 elf	boot/boot.h	/^	unsigned char  elf[12];$/;"	m	struct:ELFHeader
-enable_interrupt	include/x86/cpu.h	/^enable_interrupt(void) {$/;"	f
+enable_interrupt	include/x86/cpu.h	/^enable_interrupt(void)$/;"	f
 entry	boot/boot.h	/^	unsigned int   entry;$/;"	m	struct:ELFHeader
 esi	include/mmu.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
 esi	include/x86/memory.h	/^	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;$/;"	m	struct:TrapFrame
@@ -227,6 +227,8 @@ flags	boot/boot.h	/^	unsigned int flags;$/;"	m	struct:ProgramHeader
 font8x8_basic	kernel/device/font.c	/^char font8x8_basic[128][8] = {$/;"	v
 gdt	boot/start.S	/^gdt:$/;"	l
 gdtdesc	boot/start.S	/^gdtdesc:                           # GDT描述符$/;"	l
+get_num	lib/printk.c	/^void get_num(char* arr, int base, int n)$/;"	f
+hlt	include/x86/cpu.h	/^hlt(void)$/;"	f
 in_byte	boot/boot.h	/^in_byte(short port) {$/;"	f
 in_byte	include/x86/io.h	/^in_byte(uint16_t port) {$/;"	f
 in_long	boot/boot.h	/^in_long(short port) {$/;"	f
@@ -260,17 +262,17 @@ pd_lim	include/mmu.h	/^	uint16_t pd_lim;		\/\/ Limit$/;"	m	struct:Pseudodesc
 phentsize	boot/boot.h	/^	unsigned short phentsize;$/;"	m	struct:ELFHeader
 phnum	boot/boot.h	/^	unsigned short phnum;$/;"	m	struct:ELFHeader
 phoff	boot/boot.h	/^	unsigned int   phoff;$/;"	m	struct:ELFHeader
-prepare_buffer	kernel/device/video.c	/^prepare_buffer(void) {$/;"	f
+prepare_buffer	kernel/device/video.c	/^prepare_buffer(void)$/;"	f
 present	include/mmu.h	/^	uint32_t present          : 1;\/\/Present$/;"	m	struct:GateDescriptor
 present	include/x86/memory.h	/^	uint32_t present          : 1;$/;"	m	struct:GateDescriptor
-printk	lib/printk.c	/^printk(const char *ctl, ...) {$/;"	f
+printk	lib/printk.c	/^printk(const char *ctl, ...)$/;"	f
 privilege_level	include/mmu.h	/^	uint32_t privilege_level  : 2;\/\/descriptor(meaning new)privilege$/;"	m	struct:GateDescriptor
 privilege_level	include/x86/memory.h	/^	uint32_t privilege_level  : 2;$/;"	m	struct:GateDescriptor
 rand	lib/random.c	/^rand(void) {$/;"	f
 read_palette	kernel/device/palette.c	/^void read_palette() {$/;"	f
 readsect	boot/main.c	/^readsect(void *dst, int offset) {$/;"	f
 readseg	boot/main.c	/^readseg(unsigned char *pa, int count, int offset) {$/;"	f
-save_idt	include/x86/cpu.h	/^save_idt(void *addr, uint32_t size) {$/;"	f
+save_idt	include/x86/cpu.h	/^save_idt(void *addr, uint32_t size)$/;"	f
 sd_avl	include/mmu.h	/^	unsigned sd_avl : 1;        \/\/ Unused (available for software use)$/;"	m	struct:Segdesc
 sd_base_15_0	include/mmu.h	/^	unsigned sd_base_15_0 : 16; \/\/ Low bits of segment base address$/;"	m	struct:Segdesc
 sd_base_23_16	include/mmu.h	/^	unsigned sd_base_23_16 : 8; \/\/ Middle bits of segment base address$/;"	m	struct:Segdesc
@@ -301,6 +303,7 @@ strcpy	lib/string.c	/^void strcpy(char *d, const char *s) {$/;"	f
 strlen	lib/string.c	/^size_t strlen(const char *str) {$/;"	f
 system	include/mmu.h	/^	uint32_t system           : 1;\/\/must be 0(system)$/;"	m	struct:GateDescriptor
 system	include/x86/memory.h	/^	uint32_t system           : 1;$/;"	m	struct:GateDescriptor
+test_printk	kernel/main.c	/^void test_printk()$/;"	f
 text	include/game.h	/^	int text;$/;"	v
 ts_cr3	include/mmu.h	/^	physaddr_t ts_cr3;	\/\/ Page directory base$/;"	m	struct:Taskstate
 ts_cs	include/mmu.h	/^	uint16_t ts_cs;$/;"	m	struct:Taskstate
@@ -346,14 +349,15 @@ type	include/x86/memory.h	/^	uint32_t type             : 4;$/;"	m	struct:GateDes
 uint16_t	include/types.h	/^typedef unsigned short uint16_t;$/;"	t
 uint32_t	include/types.h	/^typedef unsigned int   uint32_t;$/;"	t
 uint8_t	include/types.h	/^typedef unsigned char  uint8_t;$/;"	t
+user_blue_screen	kernel/device/video.c	/^user_blue_screen()$/;"	f
 v	include/game.h	/^	float v;$/;"	v
 vaddr	boot/boot.h	/^	unsigned int vaddr;$/;"	m	struct:ProgramHeader
 vbuf	kernel/device/video.c	/^static uint8_t vbuf[SCR_SIZE];$/;"	v	file:
 version	boot/boot.h	/^	unsigned int   version;$/;"	m	struct:ELFHeader
-vfprintf	lib/printk.c	/^void vfprintf(void (*printer)(char), const char *ctl, void **args) {$/;"	f
+vfprintf	lib/printk.c	/^void vfprintf(void (*printer)(char), const char *ctl, void **args)$/;"	f
 vmem	kernel/device/video.c	/^uint8_t *vmem = VMEM_ADDR;$/;"	v
 vref	kernel/device/video.c	/^static uint8_t vref[SCR_SIZE];$/;"	v	file:
-wait_for_interrupt	include/x86/cpu.h	/^wait_for_interrupt() {$/;"	f
+wait_for_interrupt	include/x86/cpu.h	/^wait_for_interrupt()$/;"	f
 waitdisk	boot/main.c	/^waitdisk(void) {$/;"	f
 write_palette	kernel/device/palette.c	/^void write_palette() {$/;"	f
 x	include/game.h	/^	float x, y;$/;"	v

@@ -1,5 +1,8 @@
 #include "common.h"
-int main(void)
+#include "x86/x86.h"
+#include "device/video.h"
+
+void test_printk()
 {
     printk("Printk test begin...\n");
     printk("the answer should be:\n");
@@ -15,7 +18,7 @@ int main(void)
     printk("%s %s%scome %co%s", "Hello,", "", "wel", 't', " ");
     printk("%c%c%c%c%c! ", 'O', 'S', 'l', 'a', 'b');
     printk("I'm the %s of %s. %s 0x%x, %s 0x%x. ", "body", "the game", "Bootblock loads me to the memory position of",
-        0x100000, "and Makefile also tells me that I'm at the location of", 0x100000);
+           0x100000, "and Makefile also tells me that I'm at the location of", 0x100000);
     printk("~!@#$^&*()_+`1234567890-=...... ");
     printk("Now I will test your printk: ");
     printk("%d + %d = %d, %d * %d = %d\n", 1, 1, 1 + 1, 123, 456, 123 * 456);
@@ -23,6 +26,10 @@ int main(void)
     printk("%x, %x, %x, %x, %x, %x\n", 0, 0xffffffff, 0x80000000, 0xabcedf01, -32768, 102030);
     printk("=======================================================\n");
     printk("Test end!!! Good luck!!!\n");
-    while (1);
-    return 0;
+}
+int main(void)
+{
+    test_printk();
+    user_blue_screen();
+    hlt();
 }

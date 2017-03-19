@@ -94,7 +94,7 @@ SCR_SIZE	include/device/video.h	10;"	d
 SCR_WIDTH	include/device/video.h	8;"	d
 VMEM_ADDR	include/device/video.h	11;"	d
 __VIDEO_H__	include/device/video.h	2;"	d
-draw_pixel	include/device/video.h	/^draw_pixel(int x, int y, int color) {$/;"	f
+draw_pixel	include/device/video.h	/^draw_pixel(int x, int y, int color)$/;"	f
 __GAME_H__	include/game.h	2;"	d
 text	include/game.h	/^	int text;$/;"	v
 v	include/game.h	/^	float v;$/;"	v
@@ -284,12 +284,13 @@ size_t	include/types.h	/^typedef int32_t size_t;$/;"	t
 uint16_t	include/types.h	/^typedef unsigned short uint16_t;$/;"	t
 uint32_t	include/types.h	/^typedef unsigned int   uint32_t;$/;"	t
 uint8_t	include/types.h	/^typedef unsigned char  uint8_t;$/;"	t
-NR_IRQ	include/x86/cpu.h	34;"	d
+NR_IRQ	include/x86/cpu.h	43;"	d
 __X86_CPU_H__	include/x86/cpu.h	2;"	d
-disable_interrupt	include/x86/cpu.h	/^disable_interrupt(void) {$/;"	f
-enable_interrupt	include/x86/cpu.h	/^enable_interrupt(void) {$/;"	f
-save_idt	include/x86/cpu.h	/^save_idt(void *addr, uint32_t size) {$/;"	f
-wait_for_interrupt	include/x86/cpu.h	/^wait_for_interrupt() {$/;"	f
+disable_interrupt	include/x86/cpu.h	/^disable_interrupt(void)$/;"	f
+enable_interrupt	include/x86/cpu.h	/^enable_interrupt(void)$/;"	f
+hlt	include/x86/cpu.h	/^hlt(void)$/;"	f
+save_idt	include/x86/cpu.h	/^save_idt(void *addr, uint32_t size)$/;"	f
+wait_for_interrupt	include/x86/cpu.h	/^wait_for_interrupt()$/;"	f
 __X86_IO_H__	include/x86/io.h	2;"	d
 in_byte	include/x86/io.h	/^in_byte(uint16_t port) {$/;"	f
 out_byte	include/x86/io.h	/^out_byte(uint16_t port, int8_t data) {$/;"	f
@@ -338,20 +339,23 @@ INTERLACE	kernel/device/video.c	15;"	d	file:
 PARTIAL_UPDATE	kernel/device/video.c	14;"	d	file:
 PARTIAL_UPDATE	kernel/device/video.c	18;"	d	file:
 SLOW	kernel/device/video.c	11;"	d	file:
-display_buffer	kernel/device/video.c	/^display_buffer(void) {$/;"	f
-draw_character	kernel/device/video.c	/^draw_character(char ch, int x, int y, int color) {$/;"	f	file:
-draw_string	kernel/device/video.c	/^draw_string(const char *str, int x, int y, int color) {$/;"	f
-prepare_buffer	kernel/device/video.c	/^prepare_buffer(void) {$/;"	f
+display_buffer	kernel/device/video.c	/^display_buffer(void)$/;"	f
+draw_character	kernel/device/video.c	/^draw_character(char ch, int x, int y, int color)$/;"	f	file:
+draw_string	kernel/device/video.c	/^draw_string(const char *str, int x, int y, int color)$/;"	f
+prepare_buffer	kernel/device/video.c	/^prepare_buffer(void)$/;"	f
+user_blue_screen	kernel/device/video.c	/^user_blue_screen()$/;"	f
 vbuf	kernel/device/video.c	/^static uint8_t vbuf[SCR_SIZE];$/;"	v	file:
 vmem	kernel/device/video.c	/^uint8_t *vmem = VMEM_ADDR;$/;"	v
 vref	kernel/device/video.c	/^static uint8_t vref[SCR_SIZE];$/;"	v	file:
 main	kernel/main.c	/^int main(void)$/;"	f
+test_printk	kernel/main.c	/^void test_printk()$/;"	f
 BLUE_SCREEN_TEXT	lib/assert.c	14;"	d	file:
 abort	lib/assert.c	/^abort(const char *fname, int line) {$/;"	f
 append	lib/assert.c	/^append(char **p, const char *str) {$/;"	f	file:
 blue_screen	lib/assert.c	/^blue_screen(const char *file, int line) {$/;"	f	file:
-printk	lib/printk.c	/^printk(const char *ctl, ...) {$/;"	f
-vfprintf	lib/printk.c	/^void vfprintf(void (*printer)(char), const char *ctl, void **args) {$/;"	f
+get_num	lib/printk.c	/^void get_num(char* arr, int base, int n)$/;"	f
+printk	lib/printk.c	/^printk(const char *ctl, ...)$/;"	f
+vfprintf	lib/printk.c	/^void vfprintf(void (*printer)(char), const char *ctl, void **args)$/;"	f
 rand	lib/random.c	/^rand(void) {$/;"	f
 seed	lib/random.c	/^static int seed = 0;$/;"	v	file:
 srand	lib/random.c	/^srand(int s) {$/;"	f

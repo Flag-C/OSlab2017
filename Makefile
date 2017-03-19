@@ -18,7 +18,7 @@ CFLAGS += -fno-builtin #禁止内置函数
 CFLAGS += -ggdb3 #GDB调试信息
 
 QEMU_OPTIONS := -serial stdio #以标准输入输为串口(COM1)
-QEMU_OPTIONS += -d int #输出中断信息
+# QEMU_OPTIONS += -d int #输出中断信息
 QEMU_OPTIONS += -monitor telnet:127.0.0.1:1111,server,nowait #telnet monitor
 
 QEMU_DEBUG_OPTIONS := -S #启动不执行
@@ -46,40 +46,40 @@ BOOT_O := $(BOOT_S:%.S=$(OBJ_DIR)/%.o)
 BOOT_O += $(BOOT_C:%.c=$(OBJ_DIR)/%.o)
 
 KERNEL_C := $(shell find $(KERNEL_DIR) -name "*.c")
-KERNEL_S := $(wildcard $(KERNEL_DIR)/*.S)
+KERNEL_S := $(shell find $(KERNEL_DIR) -name "*.S")
 KERNEL_O := $(KERNEL_C:%.c=$(OBJ_DIR)/%.o)
 KERNEL_O += $(KERNEL_S:%.S=$(OBJ_DIR)/%.o)
 
 $(IMAGE): $(BOOT) $(KERNEL)
-    @$(DD) if=/dev/zero of=$(IMAGE) count=10000         > /dev/null # 准备磁盘文件
-    @$(DD) if=$(BOOT) of=$(IMAGE) conv=notrunc          > /dev/null # 填充 boot loader
-    @$(DD) if=$(KERNEL) of=$(IMAGE) seek=1 conv=notrunc > /dev/null # 填充 kernel, 跨过 mbr
+	@$(DD) if=/dev/zero of=$(IMAGE) count=10000         > /dev/null # 准备磁盘文件
+	@$(DD) if=$(BOOT) of=$(IMAGE) conv=notrunc          > /dev/null # 填充 boot loader
+	@$(DD) if=$(KERNEL) of=$(IMAGE) seek=1 conv=notrunc > /dev/null # 填充 kernel, 跨过 mbr
 
 $(BOOT): $(BOOT_O)
-    $(LD) -e start -Ttext=0x7C00 -m elf_i386 -nostdlib -o $@.out $^
-    $(OBJCOPY) --strip-all --only-section=.text --output-target=binary $@.out $@
-    @rm $@.out
-    ruby mbr.rb $@
+	$(LD) -e start -Ttext=0x7C00 -m elf_i386 -nostdlib -o $@.out $^
+	$(OBJCOPY) --strip-all --only-section=.text --output-target=binary $@.out $@
+	@rm $@.out
+	boot/genboot.pl $@
 
 $(OBJ_BOOT_DIR)/%.o: $(BOOT_DIR)/%.S
-    @mkdir -p $(OBJ_BOOT_DIR)
-    $(CC) $(CFLAGS) -Os $< -o $@
+	@mkdir -p $(OBJ_BOOT_DIR)
+	$(CC) $(CFLAGS) -Os $< -o $@
 
 $(OBJ_BOOT_DIR)/%.o: $(BOOT_DIR)/%.c
-    @mkdir -p $(OBJ_BOOT_DIR)
-    $(CC) $(CFLAGS) -Os $< -o $@
+	@mkdir -p $(OBJ_BOOT_DIR)
+	$(CC) $(CFLAGS) -Os $< -o $@
 
 $(KERNEL): $(LD_SCRIPT)
 $(KERNEL): $(KERNEL_O) $(LIB_O)
-    $(LD) -m elf_i386 -T $(LD_SCRIPT) -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+	$(LD) -m elf_i386 -T $(LD_SCRIPT) -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 
 $(OBJ_LIB_DIR)/%.o : $(LIB_DIR)/%.c
-    @mkdir -p $(OBJ_LIB_DIR)
-    $(CC) $(CFLAGS) $< -o $@
+	@mkdir -p $(OBJ_LIB_DIR)
+	$(CC) $(CFLAGS) $< -o $@
 
 $(OBJ_KERNEL_DIR)/%.o: $(KERNEL_DIR)/%.[cS]
-    mkdir -p $(OBJ_DIR)/$(dir $<)
-    $(CC) $(CFLAGS) $< -o $@
+	mkdir -p $(OBJ_DIR)/$(dir $<)
+	$(CC) $(CFLAGS) $< -o $@
 
 DEPS := $(shell find -name "*.d")
 -include $(DEPS)
@@ -87,20 +87,20 @@ DEPS := $(shell find -name "*.d")
 .PHONY: qemu debug gdb clean
 
 qemu: $(IMAGE)
-    $(QEMU) $(QEMU_OPTIONS) $(IMAGE)
+	$(QEMU) $(QEMU_OPTIONS) $(IMAGE)
 
 # Faster, but not suitable for debugging
 qemu-kvm: $(IMAGE)
-    $(QEMU) $(QEMU_OPTIONS) --enable-kvm $(IMAGE)
+	$(QEMU) $(QEMU_OPTIONS) --enable-kvm $(IMAGE)
 
 debug: $(IMAGE)
-    $(QEMU) $(QEMU_DEBUG_OPTIONS) $(QEMU_OPTIONS) $(IMAGE)
+	$(QEMU) $(QEMU_DEBUG_OPTIONS) $(QEMU_OPTIONS) $(IMAGE)
 
 gdb:
-    $(GDB) $(GDB_OPTIONS)
+	$(GDB) $(GDB_OPTIONS)
 
 clean:
-    @rm -rf $(OBJ_DIR) 2> /dev/null
-    @rm -rf $(BOOT)    2> /dev/null
-    @rm -rf $(KERNEL)  2> /dev/null
-    @rm -rf $(IMAGE)   2> /dev/null
+	@rm -rf $(OBJ_DIR) 2> /dev/null
+	@rm -rf $(BOOT)    2> /dev/null
+	@rm -rf $(KERNEL)  2> /dev/null
+	@rm -rf $(IMAGE)   2> /dev/null

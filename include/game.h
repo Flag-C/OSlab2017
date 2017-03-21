@@ -19,13 +19,13 @@ int last_key_code(void);
 
 /* 定义fly_t链表 */
 LINKLIST_DEF(fly)
-	float x, y;
-	int text;
-	float v;
+float x, y;
+int text;
+float v;
 LINKLIST_DEF_FI(fly)
 
 /* 主循环 */
-void main_loop(void);
+void game_main_loop(void);
 
 /* 游戏逻辑相关 */
 void create_new_letter(void);

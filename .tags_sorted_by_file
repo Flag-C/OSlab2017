@@ -96,10 +96,10 @@ VMEM_ADDR	include/device/video.h	11;"	d
 __VIDEO_H__	include/device/video.h	2;"	d
 draw_pixel	include/device/video.h	/^draw_pixel(int x, int y, int color)$/;"	f
 __GAME_H__	include/game.h	2;"	d
-text	include/game.h	/^	int text;$/;"	v
-v	include/game.h	/^	float v;$/;"	v
-x	include/game.h	/^	float x, y;$/;"	v
-y	include/game.h	/^	float x, y;$/;"	v
+text	include/game.h	/^int text;$/;"	v
+v	include/game.h	/^float v;$/;"	v
+x	include/game.h	/^float x, y;$/;"	v
+y	include/game.h	/^float x, y;$/;"	v
 __IRQ_H__	include/irq.h	2;"	d
 CR0_AM	include/mmu.h	86;"	d
 CR0_CD	include/mmu.h	88;"	d
@@ -347,6 +347,31 @@ user_blue_screen	kernel/device/video.c	/^user_blue_screen()$/;"	f
 vbuf	kernel/device/video.c	/^static uint8_t vbuf[SCR_SIZE];$/;"	v	file:
 vmem	kernel/device/video.c	/^uint8_t *vmem = VMEM_ADDR;$/;"	v
 vref	kernel/device/video.c	/^static uint8_t vref[SCR_SIZE];$/;"	v	file:
+game_main_loop	kernel/game/game.c	/^void game_main_loop()$/;"	f
+key_code	kernel/game/keyboard.c	/^static volatile int key_code = 0;$/;"	v	file:
+keyboard_event	kernel/game/keyboard.c	/^keyboard_event(int code)$/;"	f
+last_key_code	kernel/game/keyboard.c	/^int last_key_code(void)$/;"	f
+letter_code	kernel/game/keyboard.c	/^static int letter_code[] = {$/;"	v	file:
+letter_pressed	kernel/game/keyboard.c	/^static bool letter_pressed[26];$/;"	v	file:
+press_key	kernel/game/keyboard.c	/^press_key(int scan_code)$/;"	f
+query_key	kernel/game/keyboard.c	/^query_key(int index)$/;"	f
+release_key	kernel/game/keyboard.c	/^release_key(int index)$/;"	f
+asm_do_irq	kernel/irq/do_irq.S	/^asm_do_irq:$/;"	l
+IRQ_SLAVE	kernel/irq/i8259.c	5;"	d	file:
+PORT_PIC_MASTER	kernel/irq/i8259.c	3;"	d	file:
+PORT_PIC_SLAVE	kernel/irq/i8259.c	4;"	d	file:
+init_intr	kernel/irq/i8259.c	/^init_intr(void) {$/;"	f
+INTERRUPT_GATE_32	kernel/irq/idt.c	3;"	d	file:
+TRAP_GATE_32	kernel/irq/idt.c	4;"	d	file:
+idt	kernel/irq/idt.c	/^struct GateDescriptor idt[NR_IRQ];$/;"	v	typeref:struct:GateDescriptor
+init_idt	kernel/irq/idt.c	/^void init_idt() {$/;"	f
+set_intr	kernel/irq/idt.c	/^set_intr(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {$/;"	f	file:
+set_trap	kernel/irq/idt.c	/^set_trap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {$/;"	f	file:
+do_keyboard	kernel/irq/irq_handle.c	/^static void (*do_keyboard)(int);$/;"	v	file:
+do_timer	kernel/irq/irq_handle.c	/^static void (*do_timer)(void);$/;"	v	file:
+irq_handle	kernel/irq/irq_handle.c	/^irq_handle(struct TrapFrame *tf) {$/;"	f
+set_keyboard_intr_handler	kernel/irq/irq_handle.c	/^set_keyboard_intr_handler( void (*ptr)(int) ) {$/;"	f
+set_timer_intr_handler	kernel/irq/irq_handle.c	/^set_timer_intr_handler( void (*ptr)(void) ) {$/;"	f
 main	kernel/main.c	/^int main(void)$/;"	f
 test_printk	kernel/main.c	/^void test_printk()$/;"	f
 BLUE_SCREEN_TEXT	lib/assert.c	14;"	d	file:

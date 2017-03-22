@@ -42,7 +42,7 @@ create_new_letter(void)
 	/* 字母、初始位置、掉落速度均为随机设定 */
 	head->x = 0;
 	head->y = rand() % (SCR_WIDTH / 8 - 2) * 8 + 8;
-	head->v = (rand() % 1000 / 1000.0 + 1) / 2.0;
+	head->v = (rand() % 1000 / 1000.0 + 1) / 1.5;
 	head->text = rand() % 26;
 	release_key(head->text); /* 清除过往的按键 */
 }
@@ -55,39 +55,41 @@ update_letter_pos(void)
 	for (it = head; it != NULL; ) {
 		fly_t next = it->_next;
 		it->x += it->v; /* 根据速度更新位置 */
-		if (it->x < 0 || it->x + 7.9 > SCR_HEIGHT) {
-			if (it->x < 0) hit ++; /* 从上部飞出屏幕 */
-			else miss ++; /* 从下部飞出屏幕 */
+		if (it->x + 7.9 > SCR_HEIGHT - 16 &&
+		    it->x > table_location &&
+		    it->x < table_location + table_length) {
+			hit ++;
 			fly_remove(it);
 			fly_free(it);
-			if (it == head) head = next; /* 更新链表 */
+			if (it == head) head = next;
+
+		} else if (it->x + 7.9 > SCR_HEIGHT ) {
+			miss++;
+			fly_remove(it);
+			fly_free(it);
+			if (it == head) head = next;
 		}
+
 		it = next;
 	}
 }
+
 
 /* 更新按键 */
 bool
 update_keypress(void)
 {
 	fly_t it, target = NULL;
-	float min = -100;
 
 	disable_interrupt();
-	/* 寻找相应键已被按下、最底部且未被击中的字符 */
-	for (it = head; it != NULL; it = it->_next) {
-		assert(it->text >= 0 && it->text < 26);
-		if (it->v > 0 && it->x > min && query_key(it->text)) {
-			min = it->x;
-			target = it;
-		}
+	if (query_key(1)) {
+		release_key(1);
+		if (table_location > 2) table_location -= 16;
+	} else if (query_key(0)) {
+		release_key(0);
+		if (table_location + table_length < SCR_WIDTH - 16) table_location += 16;
 	}
-	/* 如果找到则更新相应数据 */
-	if (target != NULL) {
-		release_key(target->text);
-		target->v = -3; /* 速度改为向上 */
-		return TRUE;
-	}
+
 	enable_interrupt();
 
 	return FALSE;

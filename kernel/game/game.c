@@ -8,7 +8,7 @@
 #include "game.h"
 
 #define FPS 30
-#define CHARACTER_PER_SECOND 5
+#define CHARACTER_PER_SECOND 2
 #define UPDATE_PER_SECOND 100
 
 volatile int tick = 0;
@@ -17,6 +17,12 @@ void
 timer_event(void)
 {
 	tick ++;
+}
+
+int
+get_time(void)
+{
+	return tick / HZ;
 }
 
 static int real_fps;
@@ -36,6 +42,7 @@ void game_main_loop()
 {
 	int now = 0, target;
 	int num_draw = 0;
+	table_location = 2;
 	bool redraw;
 
 	while (TRUE) {

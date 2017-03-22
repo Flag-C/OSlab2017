@@ -9,7 +9,7 @@ DD      := dd
 QEMU    := qemu-system-i386
 GDB     := gdb
 
-CFLAGS := -Wall -Werror -Wfatal-errors #开启所有警告, 视警告为错误, 第一个错误结束编译
+CFLAGS := -Wall -Wfatal-errors #开启所有警告, 视警告为错误, 第一个错误结束编译
 CFLAGS += -MD #生成依赖文件
 CFLAGS += -std=gnu11 -m32 -c #编译标准, 目标架构, 只编译
 CFLAGS += -I./include #头文件搜索目录

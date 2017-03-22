@@ -24,6 +24,11 @@ int text;
 float v;
 LINKLIST_DEF_FI(fly)
 
+#define RIGHT 0x4d
+#define LEFT 0x4b
+#define table_length 56
+int table_location;
+
 /* 主循环 */
 void game_main_loop(void);
 
@@ -33,6 +38,7 @@ void update_letter_pos(void);
 bool update_keypress(void);
 
 int get_hit(void);
+int get_time(void);
 int get_miss(void);
 int get_fps(void);
 void set_fps(int fps);

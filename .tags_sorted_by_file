@@ -347,7 +347,25 @@ user_blue_screen	kernel/device/video.c	/^user_blue_screen()$/;"	f
 vbuf	kernel/device/video.c	/^static uint8_t vbuf[SCR_SIZE];$/;"	v	file:
 vmem	kernel/device/video.c	/^uint8_t *vmem = VMEM_ADDR;$/;"	v
 vref	kernel/device/video.c	/^static uint8_t vref[SCR_SIZE];$/;"	v	file:
+redraw_screen	kernel/game/draw.c	/^redraw_screen()$/;"	f
+characters	kernel/game/effect.c	/^characters(void)$/;"	f
+create_new_letter	kernel/game/effect.c	/^create_new_letter(void)$/;"	f
+get_hit	kernel/game/effect.c	/^get_hit(void)$/;"	f
+get_miss	kernel/game/effect.c	/^get_miss(void)$/;"	f
+head	kernel/game/effect.c	/^static fly_t head = NULL;$/;"	v	file:
+hit	kernel/game/effect.c	/^static int hit = 0, miss = 0;$/;"	v	file:
+miss	kernel/game/effect.c	/^static int hit = 0, miss = 0;$/;"	v	file:
+update_keypress	kernel/game/effect.c	/^update_keypress(void)$/;"	f
+update_letter_pos	kernel/game/effect.c	/^update_letter_pos(void)$/;"	f
+CHARACTER_PER_SECOND	kernel/game/game.c	11;"	d	file:
+FPS	kernel/game/game.c	10;"	d	file:
+UPDATE_PER_SECOND	kernel/game/game.c	12;"	d	file:
 game_main_loop	kernel/game/game.c	/^void game_main_loop()$/;"	f
+get_fps	kernel/game/game.c	/^get_fps()$/;"	f
+real_fps	kernel/game/game.c	/^static int real_fps;$/;"	v	file:
+set_fps	kernel/game/game.c	/^set_fps(int value)$/;"	f
+tick	kernel/game/game.c	/^volatile int tick = 0;$/;"	v
+timer_event	kernel/game/game.c	/^timer_event(void)$/;"	f
 key_code	kernel/game/keyboard.c	/^static volatile int key_code = 0;$/;"	v	file:
 keyboard_event	kernel/game/keyboard.c	/^keyboard_event(int code)$/;"	f
 last_key_code	kernel/game/keyboard.c	/^int last_key_code(void)$/;"	f
@@ -364,14 +382,14 @@ init_intr	kernel/irq/i8259.c	/^init_intr(void) {$/;"	f
 INTERRUPT_GATE_32	kernel/irq/idt.c	3;"	d	file:
 TRAP_GATE_32	kernel/irq/idt.c	4;"	d	file:
 idt	kernel/irq/idt.c	/^struct GateDescriptor idt[NR_IRQ];$/;"	v	typeref:struct:GateDescriptor
-init_idt	kernel/irq/idt.c	/^void init_idt() {$/;"	f
-set_intr	kernel/irq/idt.c	/^set_intr(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {$/;"	f	file:
-set_trap	kernel/irq/idt.c	/^set_trap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {$/;"	f	file:
+init_idt	kernel/irq/idt.c	/^void init_idt()$/;"	f
+set_intr	kernel/irq/idt.c	/^set_intr(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl)$/;"	f	file:
+set_trap	kernel/irq/idt.c	/^set_trap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl)$/;"	f	file:
 do_keyboard	kernel/irq/irq_handle.c	/^static void (*do_keyboard)(int);$/;"	v	file:
 do_timer	kernel/irq/irq_handle.c	/^static void (*do_timer)(void);$/;"	v	file:
-irq_handle	kernel/irq/irq_handle.c	/^irq_handle(struct TrapFrame *tf) {$/;"	f
-set_keyboard_intr_handler	kernel/irq/irq_handle.c	/^set_keyboard_intr_handler( void (*ptr)(int) ) {$/;"	f
-set_timer_intr_handler	kernel/irq/irq_handle.c	/^set_timer_intr_handler( void (*ptr)(void) ) {$/;"	f
+irq_handle	kernel/irq/irq_handle.c	/^irq_handle(struct TrapFrame *tf)$/;"	f
+set_keyboard_intr_handler	kernel/irq/irq_handle.c	/^set_keyboard_intr_handler( void (*ptr)(int) )$/;"	f
+set_timer_intr_handler	kernel/irq/irq_handle.c	/^set_timer_intr_handler( void (*ptr)(void) )$/;"	f
 main	kernel/main.c	/^int main(void)$/;"	f
 test_printk	kernel/main.c	/^void test_printk()$/;"	f
 BLUE_SCREEN_TEXT	lib/assert.c	14;"	d	file:

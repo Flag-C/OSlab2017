@@ -9,7 +9,7 @@
 	22, 47, 17, RIGHT, LEFT
 };*/
 static int letter_code[] = {
-	RIGHT, LEFT
+	RIGHT, LEFT, SHIFT_PRESS, SHIFT_REALSE,
 };
 /* 对应键按下的标志位 */
 static bool letter_pressed[26];

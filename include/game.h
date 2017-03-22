@@ -26,8 +26,11 @@ LINKLIST_DEF_FI(fly)
 
 #define RIGHT 0x4d
 #define LEFT 0x4b
+#define SHIFT_PRESS 0x2a
+#define SHIFT_REALSE 0xaa
 #define table_length 56
 int table_location;
+bool accel;
 
 /* 主循环 */
 void game_main_loop(void);

@@ -82,12 +82,27 @@ update_keypress(void)
 	fly_t it, target = NULL;
 
 	disable_interrupt();
+	if (query_key(2)) accel = TRUE;
+	if (query_key(3)) {
+		release_key(2);
+		release_key(3);
+		accel = FALSE;
+	}
 	if (query_key(1)) {
 		release_key(1);
-		if (table_location > 2) table_location -= 16;
+		if (table_location > 2)
+			if (accel)
+				table_location = (table_location - 32 < 2) ? 2 : table_location - 32;
+			else table_location = (table_location - 16 < 2) ? 2 : table_location - 16;
 	} else if (query_key(0)) {
 		release_key(0);
-		if (table_location + table_length < SCR_WIDTH - 16) table_location += 16;
+		if (table_location + table_length < SCR_WIDTH)
+			if (accel)
+				table_location =  (table_location + table_length + 32 > SCR_WIDTH) ?
+				                  SCR_WIDTH - table_length - 1 : table_location + 32;
+			else
+				table_location =  (table_location + table_length + 16 > SCR_WIDTH) ?
+				                  SCR_WIDTH - table_length - 1 : table_location + 16;
 	}
 
 	enable_interrupt();

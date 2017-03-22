@@ -44,7 +44,7 @@ void game_main_loop()
 	int num_draw = 0;
 	table_location = 2;
 	bool redraw;
-
+	accel = FALSE;
 	while (TRUE) {
 		wait_for_interrupt();
 		disable_interrupt();

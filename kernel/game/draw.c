@@ -27,7 +27,8 @@ redraw_screen()
 	int i, j;
 	for (i = 0; i < 8; i ++)
 		for (j = 0; j < table_length; j ++)
-			draw_pixel(SCR_HEIGHT - 16 + i, table_location + j, 3);
+			if (accel) draw_pixel(SCR_HEIGHT - 16 + i, table_location + j, 6);
+			else draw_pixel(SCR_HEIGHT - 16 + i, table_location + j, 3);
 	draw_string(itoa(get_time()), SCR_HEIGHT - 8 - 8, 16, 48);
 	hit = itoa(get_hit());
 	draw_string("He:+", 8, SCR_WIDTH - strlen(hit) * 8 - 48, 10);

@@ -8,7 +8,7 @@ OBJCOPY := objcopy
 DD      := dd
 QEMU    := qemu-system-i386
 GDB     := gdb
-
+STU_ID	:= 151242002
 CFLAGS := -Wall -Wfatal-errors #开启所有警告, 视警告为错误, 第一个错误结束编译
 CFLAGS += -MD #生成依赖文件
 CFLAGS += -std=gnu11 -m32 -c #编译标准, 目标架构, 只编译
@@ -104,3 +104,6 @@ clean:
 	@rm -rf $(BOOT)    2> /dev/null
 	@rm -rf $(KERNEL)  2> /dev/null
 	@rm -rf $(IMAGE)   2> /dev/null
+
+submit: clean
+	cd .. && tar cvj $(shell pwd | grep -o '[^/]*$$') > $(STU_ID).tar.bz2

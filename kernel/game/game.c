@@ -40,6 +40,7 @@ get_fps()
 
 void game_main_loop()
 {
+	write_palette();
 	int now = 0, target;
 	int num_draw = 0;
 	table_location = 2;

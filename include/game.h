@@ -20,7 +20,7 @@ int last_key_code(void);
 /* 定义fly_t链表 */
 LINKLIST_DEF(fly)
 float x, y;
-int text;
+int color;
 float v;
 LINKLIST_DEF_FI(fly)
 

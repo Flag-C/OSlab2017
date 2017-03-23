@@ -54,16 +54,20 @@ update_letter_pos(void)
 	for (it = head; it != NULL; ) {
 		fly_t next = it->_next;
 		it->x += it->v; /* 根据速度更新位置 */
-		if (it->x + 7.9 > SCR_HEIGHT - 16 &&
-		    it->x > table_location &&
-		    it->x < table_location + table_length) {
+		if (it->x + 7.9 + 16 > SCR_HEIGHT &&
+		    it->y > table_location &&
+		    it->y < table_location + table_length) {
 			hit ++;
 			fly_remove(it);
 			fly_free(it);
 			if (it == head) head = next;
 
 		} else if (it->x + 7.9 > SCR_HEIGHT ) {
-			miss++;
+			if (it->y > table_location &&
+			    it->y < table_location + table_length)
+				hit++;
+			else
+				miss++;
 			fly_remove(it);
 			fly_free(it);
 			if (it == head) head = next;

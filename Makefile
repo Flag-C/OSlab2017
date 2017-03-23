@@ -14,7 +14,7 @@ CFLAGS += -MD #生成依赖文件
 CFLAGS += -std=gnu11 -m32 -c #编译标准, 目标架构, 只编译
 CFLAGS += -I./include #头文件搜索目录
 CFLAGS += -O0 #不开优化, 方便调试
-CFLAGS += -fno-builtin -fno-stack-protector #禁止内置函数
+CFLAGS += -fno-builtin -fno-stack-protector#禁止内置函数
 CFLAGS += -ggdb3 #GDB调试信息
 
 QEMU_OPTIONS := -serial stdio #以标准输入输为串口(COM1)

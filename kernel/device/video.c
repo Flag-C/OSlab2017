@@ -64,35 +64,9 @@ display_buffer(void)
 #endif
 }
 
-static inline void
-draw_character(char ch, int x, int y, int color)
-{
-	int i, j;
-	assert((ch & 0x80) == 0);
-	char *p = font8x8_basic[(int)ch];
-	for (i = 0; i < 8; i ++)
-		for (j = 0; j < 8; j ++)
-			if ((p[i] >> j) & 1)
-				draw_pixel(x + i, y + j, color);
-}
-
 void
-draw_string(const char *str, int x, int y, int color)
+draw_pixel(int x, int y, int color)
 {
-	while (*str) {
-		draw_character(*str ++, x, y, color);
-		if (y + 8 >= SCR_WIDTH) {
-			x += 8; y = 0;
-		} else
-			y += 8;
-	}
-}
-
-void
-user_blue_screen()
-{
-	static char buf[256] = "treminate normally";
-	memset(vmem, 1, SCR_SIZE);
-	draw_string(buf, 0, 0, 15);
-	display_buffer();
+	assert(x >= 0 && y >= 0 && x < SCR_HEIGHT && y < SCR_WIDTH);
+	vmem[(x << 8) + (x << 6) + y] = color;
 }

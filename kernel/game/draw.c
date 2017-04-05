@@ -2,13 +2,45 @@
 #include "string.h"
 #include "device/video.h"
 #include "resources.h"
-
+extern char font8x8_basic[128][8];
 /* 绘制屏幕上的内容。
  * 注意程序在绘图之前调用了prepare_buffer，结束前调用了display_buffer。
  * prepare_buffer会准备一个空白的绘图缓冲区，display_buffer则会将缓冲区绘制到屏幕上，
  * draw_pixel或draw_string绘制的内容将保存在缓冲区内(暂时不会显示在屏幕上)，调用
  * display_buffer后才会显示。
 */
+void
+draw_pixel_u(int x, int y, int color)
+{
+	asm volatile("int $0x80"::"a"(2), "b"(x), "c"(y), "d"(color));
+	return;
+}
+
+static inline void
+draw_character(char ch, int x, int y, int color)
+{
+	int i, j;
+	assert((ch & 0x80) == 0);
+	char *p = font8x8_basic[(int)ch];
+	for (i = 0; i < 8; i ++)
+		for (j = 0; j < 8; j ++)
+			if ((p[i] >> j) & 1)
+				draw_pixel_u(x + i, y + j, color);
+}
+
+void
+draw_string(const char *str, int x, int y, int color)
+{
+	while (*str) {
+		draw_character(*str ++, x, y, color);
+		if (y + 8 >= SCR_WIDTH) {
+			x += 8; y = 0;
+		} else
+			y += 8;
+	}
+}
+
+
 void
 redraw_screen()
 {

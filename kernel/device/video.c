@@ -63,6 +63,14 @@ display_buffer(void)
 	asm volatile ("cld; rep movsl" : : "c"(SCR_SIZE / 4), "S"(vbuf), "D"(vmem));
 #endif
 }
+void
+draw_background(unsigned char background[])
+{
+	int i, j;
+	for (i = 0; i < SCR_HEIGHT; i++)
+		for (j = 0; j < SCR_WIDTH; j++)
+			draw_pixel(i, j, background[i * SCR_WIDTH + j]);
+}
 
 void
 draw_pixel(int x, int y, int color)

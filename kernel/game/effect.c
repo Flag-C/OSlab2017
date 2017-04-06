@@ -28,6 +28,19 @@ characters(void)
 	return head;
 }
 
+void release_key_u(int index)
+{
+	asm volatile("int $0x80"::"a"(6), "b"(index));
+	return;
+}
+
+bool query_key_u(int index)
+{
+	int ret;
+	asm volatile("int $0x80":"=a"(ret):"a"(3), "b"(index));
+	return ret;
+}
+
 /* 在屏幕上创建一个新的字母 */
 void
 create_new_letter(void)
@@ -85,20 +98,20 @@ update_keypress(void)
 	fly_t it, target = NULL;
 
 	disable_interrupt();
-	if (query_key(2)) accel = TRUE;
-	if (query_key(3)) {
-		release_key(2);
-		release_key(3);
+	if (query_key_u(2)) accel = TRUE;
+	if (query_key_u(3)) {
+		release_key_u(2);
+		release_key_u(3);
 		accel = FALSE;
 	}
-	if (query_key(1)) {
-		release_key(1);
+	if (query_key_u(1)) {
+		release_key_u(1);
 		if (table_location > 2)
 			if (accel)
 				table_location = (table_location - 32 < 2) ? 2 : table_location - 32;
 			else table_location = (table_location - 16 < 2) ? 2 : table_location - 16;
-	} else if (query_key(0)) {
-		release_key(0);
+	} else if (query_key_u(0)) {
+		release_key_u(0);
 		if (table_location + table_length < SCR_WIDTH)
 			if (accel)
 				table_location =  (table_location + table_length + 32 > SCR_WIDTH) ?

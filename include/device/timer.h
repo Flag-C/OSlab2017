@@ -3,5 +3,5 @@
 
 #define HZ 1000
 void init_timer(void);
-
+void timer_event(void);
 #endif

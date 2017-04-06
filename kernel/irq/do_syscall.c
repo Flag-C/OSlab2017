@@ -5,6 +5,11 @@
 void serial_printc(char ch);
 void write_screen(int start, int color, int length);
 bool query_key(int index);
+void draw_background(char background[]);
+void draw_pixel(int x, int y, int color);
+void write_palette();
+void release_key(int index);
+int get_time();
 
 void do_syscall(struct TrapFrame *tf)
 {
@@ -17,6 +22,18 @@ void do_syscall(struct TrapFrame *tf)
 		break;
 	case 3:
 		tf->eax = query_key(tf->ebx);
+		break;
+	case 4:
+		draw_background((char *)tf->ebx);
+		break;
+	case 5:
+		write_palette();
+		break;
+	case 6:
+		release_key(tf->ebx);
+		break;
+	case 7:
+		tf->eax = get_tick();
 		break;
 	default:
 		printk("Undefined system call: %d %d", tf->eax, tf->ebx);

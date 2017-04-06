@@ -11,18 +11,25 @@
 #define CHARACTER_PER_SECOND 2
 #define UPDATE_PER_SECOND 100
 
-volatile int tick = 0;
 
-void
-timer_event(void)
+void write_palette_u()
 {
-	tick ++;
+	asm volatile("int $0x80"::"a"(5));
+	return;
+}
+
+int
+get_tick_u()
+{
+	int ret;
+	asm volatile("int $0x80":"=a"(ret):"a"(7));
+	return ret;
 }
 
 int
 get_time(void)
 {
-	return tick / HZ;
+	return get_tick_u() / HZ;
 }
 
 static int real_fps;
@@ -40,7 +47,7 @@ get_fps()
 
 void game_main_loop()
 {
-	write_palette();
+	write_palette_u();
 	int now = 0, target;
 	int num_draw = 0;
 	table_location = 2;
@@ -49,12 +56,12 @@ void game_main_loop()
 	while (TRUE) {
 		wait_for_interrupt();
 		disable_interrupt();
-		if (now == tick) {
+		if (now == get_tick_u()) {
 			enable_interrupt();
 			continue;
 		}
-		assert(now < tick);
-		target = tick; /* now总是小于tick，因此我们需要“追赶”当前的时间 */
+		assert(now < get_tick_u());
+		target = get_tick_u(); /* now总是小于tick，因此我们需要“追赶”当前的时间 */
 		enable_interrupt();
 
 		redraw = FALSE;

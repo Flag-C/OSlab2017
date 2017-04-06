@@ -15,6 +15,12 @@ draw_pixel_u(int x, int y, int color)
 	asm volatile("int $0x80"::"a"(2), "b"(x), "c"(y), "d"(color));
 	return;
 }
+void
+draw_bg_u(unsigned char background[])
+{
+	asm volatile("int $0X80"::"a"(4), "b"(background));
+	return;
+}
 
 static inline void
 draw_character(char ch, int x, int y, int color)
@@ -50,9 +56,7 @@ redraw_screen()
 	prepare_buffer(); /* 准备缓冲区 */
 
 	int i, j;
-	for (i = 0; i < SCR_HEIGHT; i++)
-		for (j = 0; j < SCR_WIDTH; j++)
-			draw_pixel(i, j, background[i * SCR_WIDTH + j]);
+	draw_bg_u(background);
 
 
 	/* 绘制每个字符 */
@@ -65,8 +69,8 @@ redraw_screen()
 
 	for (i = 0; i < 8; i ++)
 		for (j = 0; j < table_length; j ++)
-			if (accel) draw_pixel(SCR_HEIGHT - 16 + i, table_location + j, 200);
-			else draw_pixel(SCR_HEIGHT - 16 + i, table_location + j, 14);
+			if (accel) draw_pixel_u(SCR_HEIGHT - 16 + i, table_location + j, 200);
+			else draw_pixel_u(SCR_HEIGHT - 16 + i, table_location + j, 14);
 	draw_string(itoa(get_time()), SCR_HEIGHT - 8 - 8, 16, 48);
 	hit = itoa(get_hit());
 	draw_string("He:+", 8, SCR_WIDTH - strlen(hit) * 8 - 48, 225);

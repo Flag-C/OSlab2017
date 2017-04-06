@@ -37,6 +37,7 @@ set_trap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_
 /* 这些函数是汇编代码 */
 void irq0();
 void irq1();
+void irq14();
 void vec0();
 void vec1();
 void vec2();
@@ -81,7 +82,7 @@ void init_idt()
 	/* 设置外部中断的处理 */
 	set_intr(idt + 32, SEG_KERNEL_CODE, (uint32_t)irq0, DPL_KERNEL);
 	set_intr(idt + 33, SEG_KERNEL_CODE, (uint32_t)irq1, DPL_KERNEL);
-
+	set_intr(idt + 46, SEG_KERNEL_CODE, (uint32_t)irq14, DPL_KERNEL);
 	/* 写入IDT */
 	save_idt(idt, sizeof(idt));
 }

@@ -1,9 +1,10 @@
-#include "x86/io.h"
+#include "x86/x86.h"
 
 #define SERIAL_PORT  0x3F8
 
 void
-init_serial(void) {
+init_serial(void)
+{
 	out_byte(SERIAL_PORT + 1, 0x00);
 	out_byte(SERIAL_PORT + 3, 0x80);
 	out_byte(SERIAL_PORT + 0, 0x01);
@@ -14,12 +15,14 @@ init_serial(void) {
 }
 
 static inline int
-serial_idle(void) {
+serial_idle(void)
+{
 	return (in_byte(SERIAL_PORT + 5) & 0x20) != 0;
 }
 
 void
-serial_printc(char ch) {
+serial_printc(char ch)
+{
 	while (serial_idle() != TRUE);
 	out_byte(SERIAL_PORT, ch);
 }

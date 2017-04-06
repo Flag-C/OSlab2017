@@ -3,20 +3,12 @@
 
 #include "common.h"
 #include "adt/linklist.h"
+#include "printf.h"
 
-/* 初始化串口 */
-void init_serial();
-
-/* 中断时调用的函数 */
-void timer_event(void);
-void keyboard_event(int scan_code);
-
-/* 按键相关 */
-void press_key(int scan_code);
-void release_key(int ch);
-bool query_key(int ch);
-int last_key_code(void);
-
+#define HZ 1000
+#define SCR_WIDTH  320
+#define SCR_HEIGHT 200
+#define SCR_SIZE ((SCR_WIDTH) * (SCR_HEIGHT))
 /* 定义fly_t链表 */
 LINKLIST_DEF(fly)
 float x, y;
@@ -24,10 +16,7 @@ int color;
 float v;
 LINKLIST_DEF_FI(fly)
 
-#define RIGHT 0x4d
-#define LEFT 0x4b
-#define SHIFT_PRESS 0x2a
-#define SHIFT_REALSE 0xaa
+
 #define table_length 56
 int table_location;
 bool accel;

@@ -1,6 +1,5 @@
 #include "game.h"
 #include "string.h"
-#include "device/video.h"
 #include "resources.h"
 extern char font8x8_basic[128][8];
 /* 绘制屏幕上的内容。
@@ -22,7 +21,7 @@ draw_bg_u(unsigned char background[])
 	return;
 }
 
-static inline void
+void
 draw_character(char ch, int x, int y, int color)
 {
 	int i, j;
@@ -46,6 +45,19 @@ draw_string(const char *str, int x, int y, int color)
 	}
 }
 
+void
+prepare_buffer_u(void)
+{
+	asm volatile("int $0X80"::"a"(5));
+	return;
+}
+
+void
+display_buffer_u(void)
+{
+	asm volatile("int $0X80"::"a"(8));
+	return;
+}
 
 void
 redraw_screen()
@@ -53,7 +65,7 @@ redraw_screen()
 	fly_t it;
 	const char *hit, *miss;
 
-	prepare_buffer(); /* 准备缓冲区 */
+	prepare_buffer_u(); /* 准备缓冲区 */
 
 	int i, j;
 	draw_bg_u(background);
@@ -84,5 +96,5 @@ redraw_screen()
 	draw_string("FPS", 8, strlen(itoa(get_fps())) * 8 + 8, 255);
 	//printk("%d", table_location);
 
-	display_buffer(); /* 绘制缓冲区 */
+	display_buffer_u(); /* 绘制缓冲区 */
 }

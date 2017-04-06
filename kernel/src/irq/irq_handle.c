@@ -1,5 +1,4 @@
 #include "x86/x86.h"
-#include "game.h"
 
 static void (*do_timer)(void);
 static void (*do_keyboard)(int);
@@ -37,8 +36,9 @@ irq_handle(struct TrapFrame *tf)
 		out_byte(0x61, val | 0x80);
 		out_byte(0x61, val);
 
-		printk("%s, %d: key code = %x\n", __FUNCTION__, __LINE__, code);
+		//printk("%s, %d: key code = %x\n", __FUNCTION__, __LINE__, code);
 		do_keyboard(code);
+	} else if (tf->irq == 1014) {
 	} else
 		assert(0);
 }

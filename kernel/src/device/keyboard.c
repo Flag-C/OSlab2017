@@ -1,6 +1,9 @@
 #include "common.h"
 #include "string.h"
-#include "game.h"
+#define RIGHT 0x4d
+#define LEFT 0x4b
+#define SHIFT_PRESS 0x2a
+#define SHIFT_REALSE 0xaa
 
 static int letter_code[] = {
 	RIGHT, LEFT, SHIFT_PRESS, SHIFT_REALSE,

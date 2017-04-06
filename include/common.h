@@ -6,6 +6,4 @@
 #include "assert.h"
 
 
-void printk(const char *ctl, ...);
-
 #endif

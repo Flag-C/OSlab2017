@@ -1,22 +1,11 @@
 #include "common.h"
 #include "irq.h"
 #include "x86/x86.h"
-#include "device/video.h"
-#include "device/timer.h"
-#include "device/font.h"
-#include "device/palette.h"
 #include "game.h"
 
 #define FPS 30
 #define CHARACTER_PER_SECOND 2
 #define UPDATE_PER_SECOND 100
-
-
-void write_palette_u()
-{
-	asm volatile("int $0x80"::"a"(5));
-	return;
-}
 
 int
 get_tick_u()
@@ -47,7 +36,7 @@ get_fps()
 
 void game_main_loop()
 {
-	write_palette_u();
+	printf("now game reached printf test %d\n", 1);
 	int now = 0, target;
 	int num_draw = 0;
 	table_location = 2;

@@ -2,7 +2,6 @@
 #include "common.h"
 #include "string.h"
 #include "adt/linklist.h"
-#include "device/video.h"
 #include "x86/x86.h"
 
 LINKLIST_IMPL(fly, 10000)

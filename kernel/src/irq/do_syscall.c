@@ -10,6 +10,8 @@ void draw_pixel(int x, int y, int color);
 void write_palette();
 void release_key(int index);
 int get_time();
+void prepare_buffer(void);
+void display_buffer(void);
 
 void do_syscall(struct TrapFrame *tf)
 {
@@ -27,13 +29,16 @@ void do_syscall(struct TrapFrame *tf)
 		draw_background((char *)tf->ebx);
 		break;
 	case 5:
-		write_palette();
+		prepare_buffer();
 		break;
 	case 6:
 		release_key(tf->ebx);
 		break;
 	case 7:
 		tf->eax = get_tick();
+		break;
+	case 8:
+		display_buffer();
 		break;
 	default:
 		printk("Undefined system call: %d %d", tf->eax, tf->ebx);

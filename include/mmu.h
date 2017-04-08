@@ -135,7 +135,7 @@
 #define DPL_USER                3
 
 #define NR_SEGMENTS             3
-#define SEG_KERNEL_CODE         1 
+#define SEG_KERNEL_CODE         1
 #define SEG_KERNEL_DATA         2
 
 
@@ -154,7 +154,7 @@
 
 #else	// not __ASSEMBLER__
 
-#include <include/types.h>
+#include "types.h"
 
 // Segment Descriptors
 struct Segdesc {
@@ -263,34 +263,34 @@ struct Taskstate {
 // Gate descriptors for interrupts and traps
 
 
-struct GateDescriptor {
-	uint32_t offset_15_0      : 16;//low 16bit of offset in segment
-	uint32_t segment          : 16;//segment selector
-	uint32_t pad0             : 8;//low 5#args, 0 for interrupt/trap gates high 3bit:reserved(should be 0 I guess)
-	uint32_t type             : 4;//type(STS_{TG,IG32,TG32})
-	uint32_t system           : 1;//must be 0(system)
-	uint32_t privilege_level  : 2;//descriptor(meaning new)privilege
-	uint32_t present          : 1;//Present
-	uint32_t offset_31_16     : 16;//high bits of offset in segment
-};
-
-
-
-struct TrapFrame {
-	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;
-	int32_t irq;
-};
+//struct GateDescriptor {
+//	uint32_t offset_15_0      : 16;//low 16bit of offset in segment
+//	uint32_t segment          : 16;//segment selector
+//	uint32_t pad0             : 8;//low 5#args, 0 for interrupt/trap gates high 3bit:reserved(should be 0 I guess)
+//	uint32_t type             : 4;//type(STS_{TG,IG32,TG32})
+//	uint32_t system           : 1;//must be 0(system)
+//	uint32_t privilege_level  : 2;//descriptor(meaning new)privilege
+//	uint32_t present          : 1;//Present
+//	uint32_t offset_31_16     : 16;//high bits of offset in segment
+//};
+//
+//
+//
+//struct TrapFrame {
+//	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;
+//	int32_t irq;
+//};
 
 
 // Set up a normal interrupt/trap gate descriptor.
 // - istrap: 1 for a trap (= exception) gate, 0 for an interrupt gate.
-    //   see section 9.6.1.3 of the i386 reference: "The difference between
-    //   an interrupt gate and a trap gate is in the effect on IF (the
-    //   interrupt-enable flag). An interrupt that vectors through an
-    //   interrupt gate resets IF, thereby preventing other interrupts from
-    //   interfering with the current interrupt handler. A subsequent IRET
-    //   instruction restores IF to the value in the EFLAGS image on the
-    //   stack. An interrupt through a trap gate does not change IF."
+//   see section 9.6.1.3 of the i386 reference: "The difference between
+//   an interrupt gate and a trap gate is in the effect on IF (the
+//   interrupt-enable flag). An interrupt that vectors through an
+//   interrupt gate resets IF, thereby preventing other interrupts from
+//   interfering with the current interrupt handler. A subsequent IRET
+//   instruction restores IF to the value in the EFLAGS image on the
+//   stack. An interrupt through a trap gate does not change IF."
 // - sel: Code segment selector for interrupt/trap handler
 // - off: Offset in code segment for interrupt/trap handler
 // - dpl: Descriptor Privilege Level -

@@ -1,19 +1,30 @@
+#include "memory/memlayout.h"
+#include "mmu.h"
+#include "string.h"
 #include "elf.h"
 #define SECTSIZE 512
 #define ELF_OFFSET_IN_DISK 102400
 //refer to ics pa
 
+#define SECTSIZE 512
+#define ELF_OFFSET_IN_DISK 102400
+
 void readseg(unsigned char *, int, int);
+
+void mm_malloc(pde_t *pgdir, void *va, unsigned long size);
+
+pde_t game_pgdir[NPDENTRIES];
+pde_t entry_pgdir[NPDENTRIES];
 
 unsigned int
 loader(void)
 {
 	struct ELFHeader *elf;
 	struct ProgramHeader *ph, *eph;
-	unsigned char* pa, *i;
+	unsigned char* va, *i;
 
-	elf = (struct ELFHeader*)0x0;
-
+	elf = (struct ELFHeader*)KERNBASE;
+	memcpy(game_pgdir, entry_pgdir, 4096);
 	/* read elf header */
 	readseg((void *)elf, 4096, ELF_OFFSET_IN_DISK);
 
@@ -21,10 +32,18 @@ loader(void)
 	ph = (struct ProgramHeader *)((void *)elf + elf->phoff);
 	eph = ph + elf->phnum;
 	for (; ph < eph; ph ++) {
-		pa = (void *)ph->paddr;
-		readseg(pa, ph->filesz, ELF_OFFSET_IN_DISK + ph->off);
-		for (i = pa + ph->filesz; i < pa + ph->memsz; *i ++ = 0);
+		if (ph->type == 1) { // Define PT_LOAD to 1.
+			va = (void *)ph->vaddr;
+			mm_malloc(entry_pgdir, va, ph->memsz);
+			readseg(va, ph->filesz, ELF_OFFSET_IN_DISK + ph->off);
+			for (i = va + ph->filesz; i < va + ph->memsz; *i ++ = 0);
+		}
 	}
+	//for (; ph < eph; ph ++) {
+	//	pa = (void *)ph->paddr;
+	//	readseg(pa, ph->filesz, ELF_OFFSET_IN_DISK + ph->off);
+	//	for (i = pa + ph->filesz; i < pa + ph->memsz; *i ++ = 0);
+	//}
 
 	/* entry */
 	volatile unsigned int entry = elf->entry;

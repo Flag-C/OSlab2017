@@ -83,7 +83,8 @@ $(KERNEL): $(KERNEL_O) $(LIB_O)
 
 $(GAME) : $(GAME_LD_SCRIPT)
 $(GAME) : $(GAME_O) $(LIB_O)
-	$(LD) -m elf_i386 -T $(GAME_LD_SCRIPT) -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+	$(LD) -m elf_i386 -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+	#$(LD) -m elf_i386 -T $(GAME_LD_SCRIPT) -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 
 $(OBJ_LIB_DIR)/%.o : $(LIB_DIR)/%.c
 	@mkdir -p $(OBJ_LIB_DIR)
@@ -118,6 +119,7 @@ gdb:
 clean:
 	@rm -rf $(OBJ_DIR) 2> /dev/null
 	@rm -rf $(BOOT)    2> /dev/null
+	@rm -rf $(GAME)    2> /dev/null
 	@rm -rf $(KERNEL)  2> /dev/null
 	@rm -rf $(IMAGE)   2> /dev/null
 

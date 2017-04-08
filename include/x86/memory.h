@@ -5,7 +5,7 @@
 #define DPL_USER                3
 
 #define NR_SEGMENTS             3
-#define SEG_KERNEL_CODE         1 
+#define SEG_KERNEL_CODE         1
 #define SEG_KERNEL_DATA         2
 
 struct GateDescriptor {

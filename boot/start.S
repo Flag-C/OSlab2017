@@ -47,6 +47,8 @@ gdt:
   SEG_NULLASM                    # GDT第一项必须为空
   SEG_ASM(0xA, 0x0, 0xffffffff)  # 代码段描述符
   SEG_ASM(0x2, 0x0, 0xffffffff)  # 数据段描述符
+  SEG_ASM_U(0xA, 0x0, 0xffffffff)  
+  SEG_ASM_U(0x2, 0x0, 0xffffffff)  
 
 gdtdesc:                           # GDT描述符
   .word   (gdtdesc - gdt - 1)    # GDT长度，留意地址运算

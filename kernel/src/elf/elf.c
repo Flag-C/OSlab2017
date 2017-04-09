@@ -2,8 +2,7 @@
 #include "mmu.h"
 #include "string.h"
 #include "elf.h"
-#define SECTSIZE 512
-#define ELF_OFFSET_IN_DISK 102400
+#include "x86/x86.h"
 //refer to ics pa
 
 #define SECTSIZE 512
@@ -12,9 +11,9 @@
 void readseg(unsigned char *, int, int);
 
 void mm_malloc(pde_t *pgdir, void *va, unsigned long size);
-
+__attribute__((__aligned__(PGSIZE)))
 pde_t game_pgdir[NPDENTRIES];
-pde_t entry_pgdir[NPDENTRIES];
+extern pde_t entry_pgdir[NPDENTRIES];
 
 unsigned int
 loader(void)
@@ -25,6 +24,7 @@ loader(void)
 
 	elf = (struct ELFHeader*)KERNBASE;
 	memcpy(game_pgdir, entry_pgdir, 4096);
+	lcr3(((uintptr_t)game_pgdir) - KERNBASE);
 	/* read elf header */
 	readseg((void *)elf, 4096, ELF_OFFSET_IN_DISK);
 
@@ -34,7 +34,7 @@ loader(void)
 	for (; ph < eph; ph ++) {
 		if (ph->type == 1) { // Define PT_LOAD to 1.
 			va = (void *)ph->vaddr;
-			mm_malloc(entry_pgdir, va, ph->memsz);
+			mm_malloc(game_pgdir, va, ph->memsz);
 			readseg(va, ph->filesz, ELF_OFFSET_IN_DISK + ph->off);
 			for (i = va + ph->filesz; i < va + ph->memsz; *i ++ = 0);
 		}

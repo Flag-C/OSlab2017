@@ -30,13 +30,7 @@ struct ProgramHeader {
 };
 
 /* I/O function */
-static inline char
-in_byte(short port)
-{
-	char data;
-	asm volatile("inb %1,%0" : "=a" (data) : "Nd" (port));
-	return data;
-}
+
 static inline int
 in_long(short port)
 {
@@ -44,8 +38,6 @@ in_long(short port)
 	asm volatile("in %1,%0" : "=a" (data) : "d" (port));
 	return data;
 }
-static inline void
-out_byte(short port, char data)
-{
-	asm volatile("outb %0,%1" : : "a" (data), "Nd" (port));
-}
+
+
+void load_udir(pde_t *pgdir);

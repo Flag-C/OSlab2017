@@ -8,6 +8,7 @@
 
 void init_serial();
 void page_init();
+void init_segment();
 void timer_event(void);
 void keyboard_event(int scan_code);
 
@@ -16,6 +17,7 @@ int main(void)
     init_serial();
     init_timer();
     page_init();
+    init_segment();
     init_idt();
     init_intr();
     set_timer_intr_handler(timer_event);

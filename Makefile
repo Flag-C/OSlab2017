@@ -1,6 +1,8 @@
 BOOT   := boot.bin
 KERNEL := kernel.bin
 GAME   := game.bin
+IDLE   := idel.bin
+TESTCASE := testcase.bin
 IMAGE  := disk.bin
 
 CC      := gcc
@@ -33,10 +35,15 @@ LIB_DIR        := lib
 BOOT_DIR       := boot
 KERNEL_DIR     := kernel
 GAME_DIR       := game
+IDLE_DIR       := idle
+TESTCASE_DIR   := testcase
 OBJ_LIB_DIR    := $(OBJ_DIR)/$(LIB_DIR)
 OBJ_BOOT_DIR   := $(OBJ_DIR)/$(BOOT_DIR)
 OBJ_KERNEL_DIR := $(OBJ_DIR)/$(KERNEL_DIR)
 OBJ_GAME_DIR   := $(OBJ_DIR)/$(GAME_DIR)
+OBJ_IDLE_DIR   := $(OBJ_DIR)/$(IDLE_DIR)
+OBJ_TESTCASE_DIR   := $(OBJ_DIR)/$(TESTCASE_DIR)
+
 
 KERNEL_LD_SCRIPT := $(shell find $(KERNEL_DIR) -name "*.ld")
 GAME_LD_SCRIPT   := $(shell find $(GAME_DIR) -name "*.ld")
@@ -59,8 +66,18 @@ GAME_S := $(shell find $(GAME_DIR) -name "*.S")
 GAME_O := $(GAME_C:%.c=$(OBJ_DIR)/%.o)
 GAME_O += $(GAME_S:%.S=$(OBJ_DIR)/%.o)
 
-$(IMAGE): $(BOOT) $(KERNEL) $(GAME)
-	@cat $(BOOT) $(KERNEL) $(GAME) > $(IMAGE)
+IDLE_C := $(shell find $(IDLE_DIR) -name "*.c")
+IDLE_S := $(shell find $(IDLE_DIR) -name "*.S")
+IDLE_O := $(IDLE_C:%.c=$(OBJ_DIR)/%.o)
+IDLE_O += $(IDLE_S:%.S=$(OBJ_DIR)/%.o)
+
+TESTCASE_C := $(shell find $(TESTCASE_DIR) -name "*.c")
+TESTCASE_S := $(shell find $(TESTCASE_DIR) -name "*.S")
+TESTCASE_O := $(TESTCASE_C:%.c=$(OBJ_DIR)/%.o)
+TESTCASE_O += $(TESTCASE_S:%.S=$(OBJ_DIR)/%.o)
+
+$(IMAGE): $(BOOT) $(KERNEL) $(IDLE) $(TESTCASE)
+	@cat $(BOOT) $(KERNEL) $(IDLE) $(TESTCASE) > $(IMAGE)
 
 $(BOOT): $(BOOT_O)
 	$(LD) -e start -Ttext=0x7C00 -m elf_i386 -nostdlib -o $@.out $^
@@ -86,6 +103,13 @@ $(GAME) : $(GAME_O) $(LIB_O)
 	$(LD) -m elf_i386 -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 	#$(LD) -m elf_i386 -T $(GAME_LD_SCRIPT) -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 
+$(IDLE): $(IDLE_O) $(LIB_O)
+	$(LD) -m elf_i386 -e main -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+	idle/genidle.pl $@
+
+$(TESTCASE) : $(TESTCASE_O) $(LIB_O)
+	$(LD) -m elf_i386 -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+
 $(OBJ_LIB_DIR)/%.o : $(LIB_DIR)/%.c
 	@mkdir -p $(OBJ_LIB_DIR)
 	$(CC) $(CFLAGS) $< -o $@
@@ -95,6 +119,14 @@ $(OBJ_KERNEL_DIR)/%.o: $(KERNEL_DIR)/%.[cS]
 	$(CC) $(CFLAGS) $< -o $@
 
 $(OBJ_GAME_DIR)/%.o: $(GAME_DIR)/%.[cS]
+	mkdir -p $(OBJ_DIR)/$(dir $<)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_IDLE_DIR)/%.o: $(IDLE_DIR)/%.[cS]
+	mkdir -p $(OBJ_DIR)/$(dir $<)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_TESTCASE_DIR)/%.o: $(TESTCASE_DIR)/%.[cS]
 	mkdir -p $(OBJ_DIR)/$(dir $<)
 	$(CC) $(CFLAGS) $< -o $@
 
@@ -122,6 +154,8 @@ clean:
 	@rm -rf $(GAME)    2> /dev/null
 	@rm -rf $(KERNEL)  2> /dev/null
 	@rm -rf $(IMAGE)   2> /dev/null
+	@rm -rf $(IDLE)	   2> /dev/null
+	@rm -rf $(TESTCASE) 2> /dev/null
 
 submit: clean
 	cd .. && tar cvj $(shell pwd | grep -o '[^/]*$$') > $(STU_ID).tar.bz2

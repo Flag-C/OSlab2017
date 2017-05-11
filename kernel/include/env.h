@@ -76,7 +76,7 @@ void	env_init(void);
 void	env_init_percpu(void);
 int	env_alloc(struct Env **e, envid_t parent_id);
 void	env_free(struct Env *e);
-int	env_create(size_t size, enum EnvType type);
+int	env_create(unsigned offset_in_disk, enum EnvType type);
 void	env_destroy(struct Env *e);	// Does not return if e == curenv
 
 int	envid2env(envid_t envid, struct Env **env_store, bool checkperm);

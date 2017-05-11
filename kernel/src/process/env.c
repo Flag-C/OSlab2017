@@ -289,7 +289,7 @@ void readsect(void *dst, int offset);
 
 
 static void
-load_icode(struct Env *e, size_t size)
+load_icode(struct Env *e, unsigned offset_in_disk)
 {
 	// Hints:
 	//  Load each program segment into virtual memory
@@ -318,7 +318,7 @@ load_icode(struct Env *e, size_t size)
 
 	lcr3(PADDR(e->env_pgdir));
 	mm_malloc(e->env_pgdir, (void *)USTACKTOP - USER_STACK_SIZE, USER_STACK_SIZE);
-	readseg((void *)ELFHDR, 4096, 102400);
+	readseg((void *)ELFHDR, 4096, offset_in_disk);
 	ph = (struct ProgramHeader *) ((uint8_t *) ELFHDR + ELFHDR->phoff);
 	eph = ph + ELFHDR->phnum;
 	//  You should only load segments with ph->p_type == ELF_PROG_LOAD.
@@ -357,12 +357,12 @@ load_icode(struct Env *e, size_t size)
 // The new env's parent ID is set to 0.
 //
 int
-env_create(size_t size, enum EnvType type)
+env_create(unsigned offset_in_disk, enum EnvType type)
 {
 	// LAB 3: Your code here.
 	struct Env *penv;
 	int eid = env_alloc(&penv, 0);
-	load_icode(penv, size);
+	load_icode(penv, offset_in_disk);
 	return eid;
 }
 
@@ -442,7 +442,7 @@ env_destroy(struct Env *e)
 void
 env_pop_tf(struct TrapFrame *tf)
 {
-	printk("%s, %d: aha\n", __FUNCTION__, __LINE__);
+	printk("%s, %d: ready to iret\n", __FUNCTION__, __LINE__);
 	__asm __volatile("movl %0,%%esp\n"
 	                 "\tpopal\n"
 	                 "\tpopl %%es\n"

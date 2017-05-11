@@ -23,14 +23,12 @@ int main(void)
     init_segment();
     init_serial();
     init_timer();
-    set_timer_intr_handler(timer_event);
-    set_keyboard_intr_handler(keyboard_event);
     write_palette();
     printk("game start!\n");
-    enable_interrupt();
+    //enable_interrupt();
 
     set_tss_esp0(0xc0280000 - 4);
-    int eid = env_create(4096, 0);
+    int eid = env_create(102400 + 10240, 0);
     struct Env *e;
     envid2env(eid, &e, false);
     env_run(e);

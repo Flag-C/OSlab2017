@@ -28,16 +28,16 @@ page_init(void)
 	// free pages!
 	unsigned long i;
 	page_free_list = NULL;
-	for (i = 0; i < 0x200; i ++) {
+	for (i = 0; i < 0x280; i ++) {
 		pages[i].pp_ref = 1;
 		pages[i].pp_link = NULL;
 	}
-	for (i = npages - 1; i >= 0x200; i --) {
+	for (i = npages - 1; i >= 0x280; i --) {
 		pages[i].pp_ref = 0;
 		pages[i].pp_link = page_free_list;
 		page_free_list = &pages[i];
 	}
-	boot_map_region(entry_pgdir, 0xc0000000, 128 << 20, 0, PTE_W);
+	boot_map_region(entry_pgdir, 0xc0000000, 128 << 20, 0, PTE_W | PTE_U);
 }
 
 //
@@ -149,7 +149,7 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 //
 // Hint: the TA solution uses pgdir_walk
 
-static void
+void
 boot_map_region(pde_t *pgdir, uintptr_t va, unsigned long size, physaddr_t pa, int perm)
 {
 	// Fill this function in

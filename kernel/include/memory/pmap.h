@@ -11,7 +11,7 @@
 
 extern struct PageInfo pages[];
 
-extern pde_t *kern_pgdir;
+//extern pde_t *kern_pgdir;
 
 
 /* This macro takes a kernel virtual address -- an address that points above
@@ -82,6 +82,6 @@ page2kva(struct PageInfo *pp)
 
 pte_t * pgdir_walk(pde_t *pgdir, const void *va, int create);
 //physaddr_t pgdir_alloc_pa(pde_t *pgdir, const void *va, int create);
-static void boot_map_region(pde_t *pgdir, uintptr_t va, unsigned long size, physaddr_t pa, int perm);
+void boot_map_region(pde_t *pgdir, uintptr_t va, unsigned long size, physaddr_t pa, int perm);
 
 #endif /* !JOS_KERN_PMAP_H */

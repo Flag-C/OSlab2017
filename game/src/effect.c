@@ -96,7 +96,7 @@ update_keypress(void)
 {
 	fly_t it, target = NULL;
 
-	disable_interrupt();
+	//disable_interrupt();
 	if (query_key_u(2)) accel = TRUE;
 	if (query_key_u(3)) {
 		release_key_u(2);
@@ -120,7 +120,7 @@ update_keypress(void)
 				                  SCR_WIDTH - table_length - 1 : table_location + 16;
 	}
 
-	enable_interrupt();
+	//enable_interrupt();
 
 	return FALSE;
 }

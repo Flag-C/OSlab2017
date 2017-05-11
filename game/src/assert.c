@@ -28,8 +28,8 @@ abort(const char *fname, int line)
 {
 	/* 当程序遇到不可恢复的错误时，首先将外部中断关闭以防其他错误发生，
 	 * 然后显示出错信息后，等待下一个中断到来(实际永远等不到)。*/
-	disable_interrupt();
+	//disable_interrupt();
 	blue_screen(fname, line);
-	while (TRUE)
-		wait_for_interrupt();
+	//while (TRUE)
+	//wait_for_interrupt();
 }

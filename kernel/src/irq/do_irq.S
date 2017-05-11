@@ -25,14 +25,29 @@
 			irq_empty:	pushl $0;	pushl $-1;	 jmp asm_do_irq
 
 .globl asm_do_irq
+
+#define DPL_KERNEL              0
+#define SEG_KERNEL_DATA         2
+#define SELECTOR_KERNEL(s)      ( ((s) << 3) | DPL_KERNEL )
+
 .extern irq_handle
 asm_do_irq:
-	pushal
+pushl %ds
+	pushl %es
+	
+	pushl %eax
+	movw $(SELECTOR_KERNEL(SEG_KERNEL_DATA)), %ax
+	movw %ax, %es
+	movw %ax, %ds
+	popl %eax
 
+	pushal
 	pushl %esp			# ???
 	call irq_handle
 	addl $4, %esp
-
 	popal
+
+	popl %es
+	popl %ds
 	addl $8, %esp
 	iret

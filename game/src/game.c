@@ -36,22 +36,24 @@ get_fps()
 
 void game_main_loop()
 {
-	printf("now game reached printf test %d\n", 1);
+	//printf("now game reached printf test %d\n", 1);
 	int now = 0, target;
 	int num_draw = 0;
 	table_location = 2;
 	bool redraw;
 	accel = FALSE;
+	//printf("now game reached printf test %d\n", 1);
 	while (TRUE) {
-		wait_for_interrupt();
-		disable_interrupt();
+		//wait_for_interrupt();
+		//printf("is in game");
+		//disable_interrupt();
 		if (now == get_tick_u()) {
-			enable_interrupt();
+			//enable_interrupt();
 			continue;
 		}
 		assert(now < get_tick_u());
 		target = get_tick_u(); /* now总是小于tick，因此我们需要“追赶”当前的时间 */
-		enable_interrupt();
+		//enable_interrupt();
 
 		redraw = FALSE;
 		while (update_keypress())

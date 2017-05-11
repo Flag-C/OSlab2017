@@ -26,6 +26,7 @@ loader(void)
 	memcpy(game_pgdir, entry_pgdir, 4096);
 	lcr3(((uintptr_t)game_pgdir) - KERNBASE);
 	/* read elf header */
+	mm_malloc(game_pgdir, (void *)USTACKTOP - USER_STACK_SIZE, USER_STACK_SIZE);
 	readseg((void *)elf, 4096, ELF_OFFSET_IN_DISK);
 
 	/* loader */

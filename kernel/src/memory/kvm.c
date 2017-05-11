@@ -16,7 +16,6 @@ set_tss(SegDesc *ptr)
 	ptr->base_15_0   = base & 0xffff;
 	ptr->base_23_16  = (base >> 16) & 0xff;
 	ptr->type = STS_T32A;
-	ptr->segment_type = 0;
 	ptr->privilege_level = DPL_USER;
 	ptr->present = 1;
 	ptr->limit_19_16 = limit >> 16;
@@ -64,6 +63,9 @@ init_segment(void)
 	memset(gdt, 0, sizeof(gdt));
 	set_segment(&gdt[SEG_KERNEL_CODE], DPL_KERNEL, SEG_EXECUTABLE | SEG_READABLE);
 	set_segment(&gdt[SEG_KERNEL_DATA], DPL_KERNEL, SEG_WRITABLE );
+	set_segment(&gdt[SEG_USER_CODE], DPL_USER, SEG_EXECUTABLE | SEG_READABLE);
+	set_segment(&gdt[SEG_USER_DATA], DPL_USER, SEG_WRITABLE );
+
 
 	write_gdt(gdt, sizeof(gdt));
 

@@ -26,6 +26,9 @@
 // To construct a linear address la from PDX(la), PTX(la), and PGOFF(la),
 // use PGADDR(PDX(la), PTX(la), PGOFF(la)).
 
+#define USER_STACK_SIZE  (1<<22)
+#define USTACKTOP 0x50000000
+
 // page number field of address
 #define PGNUM(la)	(((uintptr_t) (la)) >> PTXSHIFT)
 
@@ -141,10 +144,14 @@
 #define SEG_RW_DATA				0x2 //WRITEBLE
 #define SEG_EXE_CODE			0xa	//READABLE|EXECUTABLE
 
-#define NR_SEGMENTS             512
+
+#define NR_SEGMENTS             10
 #define SEG_KERNEL_CODE         1
 #define SEG_KERNEL_DATA         2
-#define SEG_TSS					3
+#define SEG_USER_CODE			3
+#define SEG_USER_DATA			4
+#define SEG_TSS					5
+
 #define SELECTOR_KERNEL(s)		( ((s) << 3) | DPL_KERNEL )
 #define SELECTOR_USER(s)		( ((s) << 3) | DPL_USER )
 

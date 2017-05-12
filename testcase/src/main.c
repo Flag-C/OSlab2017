@@ -3,17 +3,18 @@
 
 int main()
 {
+	int i;
 	printf("Now start the testcase!\n");
 	if (fork()) {
-		while (1) {
+		for (i = 0; i < 3; i ++) {
 			printf("Parent: Ping!\n");
-			sleep(2);
+			sleep(3);
 		}
 	} else {
-		while (1) {
+		for (i = 0; i < 3; i ++) {
 			printf("Child: Pong!\n");
 			sleep(1);
 		}
 	}
-	return 0;
+	exit(0);
 }

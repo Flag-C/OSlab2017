@@ -46,6 +46,9 @@ void do_syscall(struct TrapFrame *tf)
 	case 10:
 		sys_sleep(tf->ebx);
 		break;
+	case 11:
+		sys_exit(tf->ebx);
+		break;
 	case 4098: break;
 	default:
 		printk("Undefined system call: %d %d\n", tf->eax, tf->ebx);

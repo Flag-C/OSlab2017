@@ -5,7 +5,7 @@
 #include "adt/linklist.h"
 #include "printf.h"
 
-#define HZ 1000
+#define HZ 100
 #define SCR_WIDTH  320
 #define SCR_HEIGHT 200
 #define SCR_SIZE ((SCR_WIDTH) * (SCR_HEIGHT))

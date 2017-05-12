@@ -95,6 +95,7 @@ env_init(void)
 	for (i = NENV - 1; i >= 0; i--) {
 		envs[i].env_id = 0;
 		envs[i].env_link = env_free_list;
+		envs[i].env_status = ENV_FREE;
 		env_free_list = envs + i;
 	}
 	// Per-CPU part of the initialization
@@ -390,7 +391,7 @@ env_free(struct Env *e)
 	printk("[%08x] free env %08x\n", curenv ? curenv->env_id : 0, e->env_id);
 
 	// Flush all mapped pages in the user portion of the address space
-	assert(UTOP % PTSIZE == 0);
+	/*assert(UTOP % PTSIZE == 0);
 	for (pdeno = 0; pdeno < PDX(UTOP); pdeno++) {
 
 		// only look at mapped page tables
@@ -410,7 +411,7 @@ env_free(struct Env *e)
 		// free the page table itself
 		e->env_pgdir[pdeno] = 0;
 		page_decref(pa2page(pa));
-	}
+	}*/
 
 	// free the page directory
 	pa = PADDR(e->env_pgdir);
@@ -421,6 +422,7 @@ env_free(struct Env *e)
 	e->env_status = ENV_FREE;
 	e->env_link = env_free_list;
 	env_free_list = e;
+	printk("%s, %d: Removing env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, e->env_id);
 }
 
 //
@@ -491,7 +493,7 @@ env_run(struct Env *e)
 	curenv = e;
 	e->env_status = ENV_RUNNING;
 	lcr3(PADDR(e->env_pgdir));
-	//printk("%s, %d: Now go to env(id = 0x%x)!\n", __FUNCTION__, __LINE__, e->env_id);
+	printk("%s, %d: Now go to env(id = 0x%x)!\n", __FUNCTION__, __LINE__, e->env_id);
 	env_pop_tf(&e->env_tf);
 }
 

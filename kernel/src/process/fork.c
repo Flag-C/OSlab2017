@@ -13,6 +13,7 @@ static void fork_store_pgdir(struct Env *penv)
 			for (j = 0; j < 1024; j ++) {
 				if (pte[j] & PTE_P) {
 					struct PageInfo *pp = page_alloc(ALLOC_ZERO);
+					pp->pp_ref = 1;
 					page_insert(penv->env_pgdir, pp, (void *)((i << 22) + (j << 12)), pte[j] & 0xfff);
 					memcpy((void *)page2kva(pp), (void *)page2kva(pa2page(pte[j])), PGSIZE);
 				}

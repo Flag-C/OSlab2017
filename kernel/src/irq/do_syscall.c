@@ -12,6 +12,7 @@ void release_key(int index);
 int get_time();
 void prepare_buffer(void);
 void display_buffer(void);
+int fork();
 
 void do_syscall(struct TrapFrame *tf)
 {
@@ -40,8 +41,11 @@ void do_syscall(struct TrapFrame *tf)
 	case 8:
 		display_buffer();
 		break;
+	case 9:
+		tf->eax = fork();
+	case 4098: break;
 	default:
-		printk("Undefined system call: %d %d", tf->eax, tf->ebx);
+		printk("Undefined system call: %d %d\n", tf->eax, tf->ebx);
 		assert(0);
 	}
 }

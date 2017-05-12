@@ -2,18 +2,21 @@
 
 void schedule_process()
 {
-	int index, i;
+	int index, i, x;
 	if (curenv) {
+		curenv->env_status = ENV_RUNNABLE;
 		index = curenv - envs;
-		for (i = index + 1; i < NENV; i ++)
-			if (envs[i].env_status == ENV_RUNNABLE) {
-				envs[i].env_runs ++;
-				env_run(&(envs[i]));
-			}
-		for (i = 0; i < index; i ++)
-			if (envs[i].env_status == ENV_RUNNABLE) {
-				envs[i].env_runs ++;
-				env_run(&(envs[i]));
-			}
+	} else
+		index = 0;
+	for (i = 1; i <= NENV; i ++) {
+		x = (index + i) % NENV;
+		if (envs[x].env_status == ENV_NOT_RUNNABLE) {
+			if (++ envs[x].env_runs == 0)
+				envs[x].env_status = ENV_RUNNABLE;
+		} else if (envs[x].env_status == ENV_RUNNABLE) {
+			envs[i].env_runs ++;
+			env_run(&(envs[x]));
+		}
 	}
+	printk("%s, %d: Kernel should not reach here!\n", __FUNCTION__, __LINE__);
 }

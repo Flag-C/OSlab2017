@@ -33,6 +33,7 @@
 .extern irq_handle
 asm_do_irq:
 pushl %ds
+	cli
 	pushl %es
 	
 	pushl %eax

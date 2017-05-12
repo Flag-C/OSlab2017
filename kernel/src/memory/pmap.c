@@ -37,7 +37,7 @@ page_init(void)
 		pages[i].pp_link = page_free_list;
 		page_free_list = &pages[i];
 	}
-	boot_map_region(entry_pgdir, 0xc0000000, 128 << 20, 0, PTE_W | PTE_U);
+	boot_map_region(entry_pgdir, KERNBASE, 128 << 20, 0, PTE_W | PTE_U);
 }
 
 //

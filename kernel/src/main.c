@@ -6,6 +6,7 @@
 #include "device/font.h"
 #include "device/palette.h"
 #include "env.h"
+#include "process.h"
 
 void init_serial();
 void page_init();
@@ -24,19 +25,17 @@ int main(void)
     init_serial();
     init_timer();
     write_palette();
-    printk("game start!\n");
     //enable_interrupt();
 
     set_tss_esp0(0xc0280000 - 4);
-    int eid = env_create(102400 + 10240, 0);
-    eid = env_create(102400, 0);
-    struct Env * e;
-    envid2env(eid, &e, false);
-    env_run(e);
+    env_create(102400, 0);
+    env_create(102400 + 10240, 0);
+    printk("start\n");
+    schedule_process();
     printk("kernel shouldn't reach here \n");
 
-    unsigned int eip = loader();
-    run_game(eip);
+    //unsigned int eip = loader();
+    //run_game(eip);
 }
 
 void run_game(uintptr_t entry)

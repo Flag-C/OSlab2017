@@ -452,6 +452,7 @@ env_pop_tf(struct TrapFrame *tf)
 	                 "\tpopl %%es\n"
 	                 "\tpopl %%ds\n"
 	                 "\taddl $0x8,%%esp\n" /* skip tf_trapno and tf_errcode */
+	                 "\tsti\n"
 	                 "\tiret"
 	                 : : "g" (tf) : "memory");
 

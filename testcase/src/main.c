@@ -25,6 +25,12 @@ int main0()
 
 int main()
 {
-	printf("hello world\n");
-	return 0;
+	int i;
+	for (i = 0; i < 2; i ++) {
+		if (fork())
+			printf("[Parent: Ping!]\n");
+		else
+			printf("[Child: Pong!]\n");
+	}
+	while (1);
 }

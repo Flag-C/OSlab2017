@@ -196,7 +196,7 @@ env_alloc(struct Env **newenv_store, envid_t parent_id)
 	if (generation <= 0)	// Don't create a negative env_id.
 		generation = 1 << ENVGENSHIFT;
 	e->env_id = generation | (e - envs);
-	printk("envs: %x, e: %x, e->env_id: %x\n", envs, e, e->env_id);
+	//printk("envs: %x, e: %x, e->env_id: %x\n", envs, e, e->env_id);
 
 	// Set the basic status variables.
 	e->env_parent_id = parent_id;
@@ -230,8 +230,8 @@ env_alloc(struct Env **newenv_store, envid_t parent_id)
 	env_free_list = e->env_link;
 	*newenv_store = e;
 
-	printk("env_id, %x\n", e->env_id);
-	printk("[0x%x] new env 0x%x\n", curenv ? curenv->env_id : 0, e->env_id);
+	//printk("env_id, %x\n", e->env_id);
+	//printk("[0x%x] new env 0x%x\n", curenv ? curenv->env_id : 0, e->env_id);
 	return e->env_id;
 }
 
@@ -334,13 +334,13 @@ load_icode(struct Env *e, unsigned offset_in_disk)
 	//it's silly to use kern_pgdir here.
 	for (; ph < eph; ph++)
 		if (ph->type == 1) {
-			printk("ph=%x,eph=%x\n", ph, eph);
+			//printk("ph=%x,eph=%x\n", ph, eph);
 //			region_alloc(e, (void *)ph->vaddr, ph->memsz);
 			va = (void *)ph->vaddr;
 			mm_malloc(e->env_pgdir, va, ph->memsz);
 			readseg(va, ph->filesz, offset_in_disk + ph->off);
 			for (i = va + ph->filesz; i < va + ph->memsz; *i++ = 0);
-			printk("memsz: %x, filesz: %x\n", ph->memsz, ph->filesz);
+			//printk("memsz: %x, filesz: %x\n", ph->memsz, ph->filesz);
 		}
 	//we can use this because kern_pgdir is a subset of e->env_pgdir
 //	lcr3(PADDR(kern_pgdir));
@@ -364,10 +364,10 @@ env_create(unsigned offset_in_disk, enum EnvType type)
 {
 	// LAB 3: Your code here.
 	struct Env *penv;
-	printk("\n%s, %d: Creating env with offset 0x%x in disk...\n", __FUNCTION__, __LINE__, offset_in_disk);
+	//printk("\n%s, %d: Creating env with offset 0x%x in disk...\n", __FUNCTION__, __LINE__, offset_in_disk);
 	int eid = env_alloc(&penv, 0);
 	load_icode(penv, offset_in_disk);
-	printk("%s, %d: Creating env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, eid);
+	//printk("%s, %d: Creating env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, eid);
 	return eid;
 }
 
@@ -388,7 +388,7 @@ env_free(struct Env *e)
 		lcr3(PADDR(entry_pgdir));
 
 	// Note the environment's demise.
-	printk("[%08x] free env %08x\n", curenv ? curenv->env_id : 0, e->env_id);
+	//printk("[%x] free env %x\n", curenv ? curenv->env_id : 0, e->env_id);
 
 	// Flush all mapped pages in the user portion of the address space
 	/*assert(UTOP % PTSIZE == 0);
@@ -422,7 +422,7 @@ env_free(struct Env *e)
 	e->env_status = ENV_FREE;
 	e->env_link = env_free_list;
 	env_free_list = e;
-	printk("%s, %d: Removing env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, e->env_id);
+	//printk("%s, %d: Removing env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, e->env_id);
 }
 
 //
@@ -493,7 +493,7 @@ env_run(struct Env *e)
 	curenv = e;
 	e->env_status = ENV_RUNNING;
 	lcr3(PADDR(e->env_pgdir));
-	printk("%s, %d: Now go to env(id = 0x%x)!\n", __FUNCTION__, __LINE__, e->env_id);
+	//printk("%s, %d: Now go to env(id = 0x%x)!\n", __FUNCTION__, __LINE__, e->env_id);
 	env_pop_tf(&e->env_tf);
 }
 

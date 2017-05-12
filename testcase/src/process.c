@@ -16,3 +16,10 @@ void exit(int stat)
 	asm volatile("int $0x80" : : "a"(11), "b"(stat));
 	return;
 }
+
+int getpid()
+{
+	int ret;
+	asm volatile("int $0x80" : "=a"(ret) : "a"(12));
+	return ret;
+}

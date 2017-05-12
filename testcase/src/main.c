@@ -1,16 +1,12 @@
 #include "../include/printf.h"
-
-int fork()
-{
-	return 0;
-}
+#include "../include/process.h"
 
 void sleep(int t)
 {
 	while (1);
 }
 
-int main()
+int main0()
 {
 	printf("Now start the testcase!\n");
 	if (fork()) {
@@ -24,5 +20,11 @@ int main()
 			sleep(100);
 		}
 	}
+	return 0;
+}
+
+int main()
+{
+	printf("hello world\n");
 	return 0;
 }

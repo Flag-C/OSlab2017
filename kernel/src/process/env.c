@@ -92,7 +92,7 @@ env_init(void)
 	// Set up envs array
 	// LAB 3: Your code here.
 	int i;
-	for (i = NENV - 1; i >= 0; --i) {
+	for (i = NENV - 1; i >= 0; i--) {
 		envs[i].env_id = 0;
 		envs[i].env_link = env_free_list;
 		env_free_list = envs + i;
@@ -222,6 +222,7 @@ env_alloc(struct Env **newenv_store, envid_t parent_id)
 	e->env_tf.ss = GD_UD | DPL_USER;
 	e->env_tf.esp = USTACKTOP - 4;
 	e->env_tf.cs = GD_UT | DPL_USER;
+	e->env_tf.eflags = 0x202;
 	// You will set e->env_tf.tf_eip later.
 
 	// commit the allocation
@@ -332,10 +333,11 @@ load_icode(struct Env *e, unsigned offset_in_disk)
 	//it's silly to use kern_pgdir here.
 	for (; ph < eph; ph++)
 		if (ph->type == 1) {
+			printk("ph=%x,eph=%x\n", ph, eph);
 //			region_alloc(e, (void *)ph->vaddr, ph->memsz);
 			va = (void *)ph->vaddr;
 			mm_malloc(e->env_pgdir, va, ph->memsz);
-			readseg(va, ph->filesz, 102400 + ph->off);
+			readseg(va, ph->filesz, offset_in_disk + ph->off);
 			for (i = va + ph->filesz; i < va + ph->memsz; *i++ = 0);
 			printk("memsz: %x, filesz: %x\n", ph->memsz, ph->filesz);
 		}
@@ -345,7 +347,7 @@ load_icode(struct Env *e, unsigned offset_in_disk)
 	// at virtual address USTACKTOP - PGSIZE.
 	// LAB 3: Your code here.
 	e->env_tf.eip = ELFHDR->entry;
-	e->env_tf.eflags = 0x202;
+	lcr3(PADDR(entry_pgdir));
 	//	region_alloc(e, (void *) (USTACKTOP - PGSIZE), PGSIZE);
 }
 
@@ -361,8 +363,10 @@ env_create(unsigned offset_in_disk, enum EnvType type)
 {
 	// LAB 3: Your code here.
 	struct Env *penv;
+	printk("\n%s, %d: Creating env with offset 0x%x in disk...\n", __FUNCTION__, __LINE__, offset_in_disk);
 	int eid = env_alloc(&penv, 0);
 	load_icode(penv, offset_in_disk);
+	printk("%s, %d: Creating env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, eid);
 	return eid;
 }
 
@@ -485,13 +489,14 @@ env_run(struct Env *e)
 	// cprintf("curenv: %x, e: %x\n", curenv, e);
 	printk("\n");
 	if (curenv != e) {
-		// if (curenv->env_status == ENV_RUNNING)
-		// 	curenv->env_status = ENV_RUNNABLE;
+		if (curenv->env_status == ENV_RUNNING)
+			curenv->env_status = ENV_RUNNABLE;
 		curenv = e;
 		e->env_status = ENV_RUNNING;
 		e->env_runs++;
 		lcr3(PADDR(e->env_pgdir));
 	}
+	printk("%s, %d: Now go to env(id = 0x%x)!\n", __FUNCTION__, __LINE__, e->env_id);
 	env_pop_tf(&e->env_tf);
 }
 

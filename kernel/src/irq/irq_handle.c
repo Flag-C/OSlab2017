@@ -1,4 +1,5 @@
 #include "x86/x86.h"
+#include "env.h"
 
 void timer_event(void);
 void keyboard_event(int scan_code);
@@ -9,6 +10,7 @@ void do_syscall(struct TrapFrame *);
 void
 irq_handle(struct TrapFrame *tf)
 {
+	curenv->env_tf = *tf;
 	if (tf->irq < 1000 && tf->irq != 0x80) {
 		if (tf->irq == -1)
 			printk("%s, %d: Unhandled exception!\n", __FUNCTION__, __LINE__);
@@ -28,7 +30,9 @@ irq_handle(struct TrapFrame *tf)
 		//printk("%s, %d: key code = %x\n", __FUNCTION__, __LINE__, code);
 		keyboard_event(code);
 	} else if (tf->irq == 1014) {
-	} else
+	} else {
+		printk("%s, %d: Unexpected exception #%d!\n", __FUNCTION__, __LINE__, tf->irq);
 		assert(0);
+	}
 }
 

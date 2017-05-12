@@ -4,7 +4,7 @@
 #define DPL_KERNEL              0
 #define DPL_USER                3
 
-struct GateDescriptor {
+/*struct GateDescriptor {
 	uint32_t offset_15_0      : 16;
 	uint32_t segment          : 16;
 	uint32_t pad0             : 8;
@@ -23,6 +23,6 @@ struct TrapFrame {
 	uint32_t eip, cs, eflags;
 	uint32_t esp;
 	uint32_t ss;
-};
+};*/
 
 #endif

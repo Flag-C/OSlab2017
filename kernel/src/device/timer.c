@@ -8,6 +8,8 @@
 
 
 volatile int tick = 0;
+void schedule_process();
+
 
 void
 init_timer(void)
@@ -23,6 +25,8 @@ void
 timer_event(void)
 {
 	tick ++;
+	if (tick % 10 == 0)
+		schedule_process();
 }
 
 int

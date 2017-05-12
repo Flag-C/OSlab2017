@@ -38,7 +38,7 @@ start32:
   movw    %ax, %ss          # %SS = %AX
 
   # 设置栈位置。栈从此没有切换过，请注意栈的大小！
-  movl    $0x8000, %esp     # %ESP = $0x8000
+  movl    $0x8000000, %esp     # %ESP = $0x8000
   call    bootmain          # 跳转到C代码执行，此处不会返回
 
 # GDT

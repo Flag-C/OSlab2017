@@ -108,7 +108,7 @@ $(IDLE): $(IDLE_O) $(LIB_O)
 	idle/genidle.pl $@
 
 $(TESTCASE) : $(TESTCASE_O) $(LIB_O)
-	$(LD) -m elf_i386 -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+	$(LD) -m elf_i386 -e main -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 
 $(OBJ_LIB_DIR)/%.o : $(LIB_DIR)/%.c
 	@mkdir -p $(OBJ_LIB_DIR)

@@ -286,23 +286,26 @@ typedef struct {
 	char dontcare[88];
 } TSS;
 
-//struct GateDescriptor {
-//	uint32_t offset_15_0      : 16;//low 16bit of offset in segment
-//	uint32_t segment          : 16;//segment selector
-//	uint32_t pad0             : 8;//low 5#args, 0 for interrupt/trap gates high 3bit:reserved(should be 0 I guess)
-//	uint32_t type             : 4;//type(STS_{TG,IG32,TG32})
-//	uint32_t system           : 1;//must be 0(system)
-//	uint32_t privilege_level  : 2;//descriptor(meaning new)privilege
-//	uint32_t present          : 1;//Present
-//	uint32_t offset_31_16     : 16;//high bits of offset in segment
-//};
-//
-//
-//
-//struct TrapFrame {
-//	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;
-//	int32_t irq;
-//};
+struct GateDescriptor {
+	uint32_t offset_15_0      : 16;
+	uint32_t segment          : 16;
+	uint32_t pad0             : 8;
+	uint32_t type             : 4;
+	uint32_t system           : 1;
+	uint32_t privilege_level  : 2;
+	uint32_t present          : 1;
+	uint32_t offset_31_16     : 16;
+};
+
+struct TrapFrame {
+	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;
+	uint32_t es, ds;
+	int32_t irq;
+	uint32_t error_code;
+	uint32_t eip, cs, eflags;
+	uint32_t esp;
+	uint32_t ss;
+};
 
 
 // Set up a normal interrupt/trap gate descriptor.

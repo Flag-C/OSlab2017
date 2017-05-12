@@ -29,7 +29,8 @@ int main(void)
 
     set_tss_esp0(0xc0280000 - 4);
     int eid = env_create(102400 + 10240, 0);
-    struct Env *e;
+    eid = env_create(102400, 0);
+    struct Env * e;
     envid2env(eid, &e, false);
     env_run(e);
     printk("kernel shouldn't reach here \n");

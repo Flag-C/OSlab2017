@@ -3,10 +3,9 @@
 void schedule_process()
 {
 	int index, i, x;
-	if (curenv) {
-		curenv->env_status = ENV_RUNNABLE;
+	if (curenv)
 		index = curenv - envs;
-	} else
+	else
 		index = 0;
 	for (i = 1; i <= NENV; i ++) {
 		x = (index + i) % NENV;

@@ -11,7 +11,7 @@ void
 irq_handle(struct TrapFrame *tf)
 {
 	curenv->env_tf = *tf;
-	if (tf->irq < 1000 && tf->irq != 0x80) {
+	if (tf->irq < 1000 && tf->irq != 0x80 && tf->irq != 13) {
 		if (tf->irq == -1)
 			printk("%s, %d: Unhandled exception!\n", __FUNCTION__, __LINE__);
 		else
@@ -29,7 +29,7 @@ irq_handle(struct TrapFrame *tf)
 		out_byte(0x61, val);
 		//printk("%s, %d: key code = %x\n", __FUNCTION__, __LINE__, code);
 		keyboard_event(code);
-	} else if (tf->irq == 1014) {
+	} else if (tf->irq == 1014 || tf->irq == 13) {
 	} else {
 		printk("%s, %d: Unexpected exception #%d!\n", __FUNCTION__, __LINE__, tf->irq);
 		assert(0);

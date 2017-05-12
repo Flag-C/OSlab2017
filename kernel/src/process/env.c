@@ -446,7 +446,7 @@ env_destroy(struct Env *e)
 void
 env_pop_tf(struct TrapFrame *tf)
 {
-	printk("%s, %d: ready to iret\n", __FUNCTION__, __LINE__);
+	//printk("%s, %d: ready to iret\n", __FUNCTION__, __LINE__);
 	__asm __volatile("movl %0,%%esp\n"
 	                 "\tpopal\n"
 	                 "\tpopl %%es\n"
@@ -488,16 +488,10 @@ env_run(struct Env *e)
 
 	// LAB 3: Your code here.
 	// cprintf("curenv: %x, e: %x\n", curenv, e);
-	printk("\n");
-	if (curenv != e) {
-		if (curenv->env_status == ENV_RUNNING)
-			curenv->env_status = ENV_RUNNABLE;
-		curenv = e;
-		e->env_status = ENV_RUNNING;
-		e->env_runs++;
-		lcr3(PADDR(e->env_pgdir));
-	}
-	printk("%s, %d: Now go to env(id = 0x%x)!\n", __FUNCTION__, __LINE__, e->env_id);
+	curenv = e;
+	e->env_status = ENV_RUNNING;
+	lcr3(PADDR(e->env_pgdir));
+	//printk("%s, %d: Now go to env(id = 0x%x)!\n", __FUNCTION__, __LINE__, e->env_id);
 	env_pop_tf(&e->env_tf);
 }
 

@@ -1,2 +1,3 @@
 void schedule_process();
-int fork();
+int sys_fork();
+void sys_sleep(int);

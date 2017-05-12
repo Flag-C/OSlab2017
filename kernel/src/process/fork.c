@@ -21,7 +21,7 @@ static void fork_store_pgdir(struct Env *penv)
 	}
 }
 
-int fork()
+int sys_fork()
 {
 	struct Env *penv;
 	printk("\n%s, %d: Start forking(envid = 0x%x)...\n", __FUNCTION__, __LINE__, curenv->env_id);

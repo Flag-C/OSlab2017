@@ -1,6 +1,7 @@
 #include "x86/x86.h"
 #include "common.h"
 #include "assert.h"
+#include "process.h"
 
 void serial_printc(char ch);
 void write_screen(int start, int color, int length);
@@ -12,7 +13,6 @@ void release_key(int index);
 int get_time();
 void prepare_buffer(void);
 void display_buffer(void);
-int fork();
 
 void do_syscall(struct TrapFrame *tf)
 {
@@ -42,7 +42,10 @@ void do_syscall(struct TrapFrame *tf)
 		display_buffer();
 		break;
 	case 9:
-		tf->eax = fork();
+		tf->eax = sys_fork();
+	case 10:
+		sys_sleep(tf->ebx);
+		break;
 	case 4098: break;
 	default:
 		printk("Undefined system call: %d %d\n", tf->eax, tf->ebx);

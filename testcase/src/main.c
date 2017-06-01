@@ -6,12 +6,12 @@ int main()
 	int i;
 	printf("Now start the testcase!\n");
 	if (fork()) {
-		for (i = 0; i < 3; i ++) {
+		for (i = 0; i < 5; i ++) {
 			printf("process %x:Parent: Ping!\n", getpid());
 			sleep(3);
 		}
 	} else {
-		for (i = 0; i < 3; i ++) {
+		for (i = 0; i < 5; i ++) {
 			printf("process %x:Child: Pong!\n", getpid());
 			sleep(1);
 		}

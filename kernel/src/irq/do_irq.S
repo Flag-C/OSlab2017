@@ -30,10 +30,12 @@
 #define SEG_KERNEL_DATA         2
 #define SELECTOR_KERNEL(s)      ( ((s) << 3) | DPL_KERNEL )
 
+.extern curenv_esp
+.comm old_esp 4,4
 .extern irq_handle
 asm_do_irq:
-pushl %ds
 	cli
+	pushl %ds
 	pushl %es
 	
 	pushl %eax
@@ -43,9 +45,14 @@ pushl %ds
 	popl %eax
 
 	pushal
-	pushl %esp			# ???
+
+	movl %esp, old_esp
+	movl curenv_esp, %esp
+	
+	pushl old_esp
 	call irq_handle
 	addl $4, %esp
+	movl old_esp, %esp
 	popal
 
 	popl %es

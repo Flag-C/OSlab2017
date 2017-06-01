@@ -15,8 +15,9 @@ struct Env *curenv = NULL;		// The current env
 static struct Env *env_free_list;	// Free environment list
 // (linked by Env->env_link)
 
-#define ENVGENSHIFT	12		// >= LOGNENV
+#define ENVGENSHIFT	6		// >= LOGNENV
 extern pde_t entry_pgdir[];
+uint32_t curenv_esp;
 
 // Global descriptor table.
 //
@@ -493,7 +494,8 @@ env_run(struct Env *e)
 	curenv = e;
 	e->env_status = ENV_RUNNING;
 	lcr3(PADDR(e->env_pgdir));
-	//printk("%s, %d: Now go to env(id = 0x%x)!\n", __FUNCTION__, __LINE__, e->env_id);
+	curenv_esp = (unsigned)(&(e->env_stack[4096]));
+	printk("%s, %d: Now go to env(id = 0x%x)!\n", __FUNCTION__, __LINE__, e->env_id);
 	env_pop_tf(&e->env_tf);
 }
 

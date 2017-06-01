@@ -12,7 +12,7 @@ void sem_init()
 		sems[i].sem_val = 0;
 		sems[i].sem_type = SEM_TYPE_FREE;
 		sems[i].sem_blocklist = NULL;
-		sems[i].sem_next = &(sems[i + 1]);
+		sems[i].sem_next = sems + i + 1;
 	}
 	sems[NR_SEM - 1].sem_next = NULL;
 	sem_free_list = &sems[0];

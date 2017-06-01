@@ -13,6 +13,7 @@ void release_key(int index);
 int get_time();
 void prepare_buffer(void);
 void display_buffer(void);
+void sys_create_thread();
 
 void do_syscall(struct TrapFrame *tf)
 {
@@ -63,6 +64,9 @@ void do_syscall(struct TrapFrame *tf)
 		break;
 	case 16: // sem_post(char *name)
 		sem_post((char *)tf->ebx);
+		break;
+	case 17:
+		sys_create_thread(tf->ebx);
 		break;
 	case 4098: break;
 	default:

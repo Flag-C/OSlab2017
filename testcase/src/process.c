@@ -23,3 +23,8 @@ int getpid()
 	asm volatile("int $0x80" : "=a"(ret) : "a"(12));
 	return ret;
 }
+
+void thread_create(void*(*start_rtn)(void*))
+{
+	asm volatile("int $0x80" : : "a"(17), "b"(start_rtn));
+}

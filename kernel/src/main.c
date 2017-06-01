@@ -14,6 +14,8 @@ void init_segment();
 void env_init();
 void timer_event(void);
 void keyboard_event(int scan_code);
+void sem_init();
+
 
 int main(void)
 {
@@ -21,6 +23,7 @@ int main(void)
     init_idt();
     init_intr();
     env_init();
+    sem_init();
     init_segment();
     init_serial();
     init_timer();

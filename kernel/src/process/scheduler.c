@@ -12,10 +12,12 @@ void schedule_process()
 		if (envs[x].env_status == ENV_NOT_RUNNABLE) {
 			if (++ envs[x].env_runs == 0)
 				envs[x].env_status = ENV_RUNNABLE;
-		} else if (envs[x].env_status == ENV_RUNNABLE) {
+		} else if (envs[x].env_status == ENV_RUNNABLE && x != 0) {
 			envs[i].env_runs ++;
 			env_run(&(envs[x]));
 		}
 	}
+	envs[0].env_runs ++;
+	env_run(&(envs[0]));
 	printk("%s, %d: Kernel should not reach here!\n", __FUNCTION__, __LINE__);
 }

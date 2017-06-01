@@ -1,7 +1,9 @@
 #include "../include/printf.h"
+#include "../../include/types.h"
+#include "../include/semaphore.h"
 #include "../include/process.h"
 
-int main()
+int main_folk()
 {
 	int i;
 	printf("Now start the testcase!\n");
@@ -17,4 +19,18 @@ int main()
 		}
 	}
 	exit(0);
+}
+
+int main()
+{
+	sem_open("mdzz", 2, SEM_TYPE_GENERAL);
+	printf("%s, %d: hehe!\n", __FUNCTION__, __LINE__);
+	sem_wait("mdzz");
+	printf("%s, %d: hehe!\n", __FUNCTION__, __LINE__);
+	sem_wait("mdzz");
+	printf("%s, %d: hehe!\n", __FUNCTION__, __LINE__);
+	sem_wait("mdzz");
+	printf("%s, %d: hehe!\n", __FUNCTION__, __LINE__);
+	printf("haha");
+
 }

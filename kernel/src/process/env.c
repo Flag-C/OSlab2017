@@ -1,5 +1,5 @@
 /* See COPYRIGHT for copyright information. */
-
+//#define ENV_DEBUG
 #include "x86/x86.h"
 #include "mmu.h"
 #include "string.h"
@@ -230,9 +230,10 @@ env_alloc(struct Env **newenv_store, envid_t parent_id)
 	// commit the allocation
 	env_free_list = e->env_link;
 	*newenv_store = e;
-
-	//printk("env_id, %x\n", e->env_id);
-	//printk("[0x%x] new env 0x%x\n", curenv ? curenv->env_id : 0, e->env_id);
+#ifdef ENV_DEBUG
+	printk("env_id, %x\n", e->env_id);
+	printk("[0x%x] new env 0x%x\n", curenv ? curenv->env_id : 0, e->env_id);
+#endif
 	return e->env_id;
 }
 
@@ -341,7 +342,9 @@ load_icode(struct Env *e, unsigned offset_in_disk)
 			mm_malloc(e->env_pgdir, va, ph->memsz);
 			readseg(va, ph->filesz, offset_in_disk + ph->off);
 			for (i = va + ph->filesz; i < va + ph->memsz; *i++ = 0);
-			//printk("memsz: %x, filesz: %x\n", ph->memsz, ph->filesz);
+#ifdef ENV_DEBUG
+			printk("memsz: %x, filesz: %x\n", ph->memsz, ph->filesz);
+#endif
 		}
 	//we can use this because kern_pgdir is a subset of e->env_pgdir
 //	lcr3(PADDR(kern_pgdir));
@@ -365,10 +368,14 @@ env_create(unsigned offset_in_disk, enum EnvType type)
 {
 	// LAB 3: Your code here.
 	struct Env *penv;
-	//printk("\n%s, %d: Creating env with offset 0x%x in disk...\n", __FUNCTION__, __LINE__, offset_in_disk);
+#ifdef ENV_DEBUG
+	printk("\n%s, %d: Creating env with offset 0x%x in disk...\n", __FUNCTION__, __LINE__, offset_in_disk);
+#endif
 	int eid = env_alloc(&penv, 0);
 	load_icode(penv, offset_in_disk);
-	//printk("%s, %d: Creating env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, eid);
+#ifdef ENV_DEBUG
+	printk("%s, %d: Creating env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, eid);
+#endif
 	return eid;
 }
 
@@ -423,7 +430,9 @@ env_free(struct Env *e)
 	e->env_status = ENV_FREE;
 	e->env_link = env_free_list;
 	env_free_list = e;
-	//printk("%s, %d: Removing env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, e->env_id);
+#ifdef ENV_DEBUG
+	printk("%s, %d: Removing env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, e->env_id);
+#endif
 }
 
 //
@@ -458,9 +467,10 @@ env_pop_tf(struct TrapFrame *tf)
 	                 "\tsti\n"
 	                 "\tiret"
 	                 : : "g" (tf) : "memory");
-
+#ifdef ENV_DEBUG
 	printk("%s, %d: aha\n", __FUNCTION__, __LINE__);
 	printk("iret failed");  /* mostly to placate the compiler */
+#endif
 }
 
 //
@@ -495,7 +505,9 @@ env_run(struct Env *e)
 	e->env_status = ENV_RUNNING;
 	lcr3(PADDR(e->env_pgdir));
 	curenv_esp = (unsigned)(&(e->env_stack[4096]));
+#ifdef ENV_DEBUG
 	printk("%s, %d: Now go to env(id = 0x%x)!\n", __FUNCTION__, __LINE__, e->env_id);
+#endif
 	env_pop_tf(&e->env_tf);
 }
 

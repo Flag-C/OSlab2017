@@ -18,3 +18,8 @@ typedef struct Semaphore {
 
 semaphore sems[NR_SEM];
 extern semaphore *sem_free_list;
+
+bool sem_open(char *name, int val, int type);
+bool sem_close(char *name);
+bool sem_wait(char *name);
+bool sem_post(char *name);

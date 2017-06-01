@@ -13,7 +13,7 @@ void schedule_process()
 			if (++ envs[x].env_runs == 0)
 				envs[x].env_status = ENV_RUNNABLE;
 		} else if (envs[x].env_status == ENV_RUNNABLE && x != 0) {
-			envs[i].env_runs ++;
+			envs[x].env_runs ++;
 			env_run(&(envs[x]));
 		}
 	}

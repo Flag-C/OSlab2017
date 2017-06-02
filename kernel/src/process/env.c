@@ -49,9 +49,9 @@ int
 envid2env(envid_t envid, struct Env **env_store, bool checkperm)
 {
 	struct Env *e;
-
+	int i = 0;
 	// If envid is zero, return the current environment.
-	if (envid == 0) {
+	if (envid == -1) {
 		*env_store = curenv;
 		return 0;
 	}
@@ -61,8 +61,16 @@ envid2env(envid_t envid, struct Env **env_store, bool checkperm)
 	// to ensure that the envid is not stale
 	// (i.e., does not refer to a _previous_ environment
 	// that used the same slot in the envs[] array).
-	e = &envs[ENVX(envid)];
-	if (e->env_status == ENV_FREE || e->env_id != envid) {
+	e = &envs[envid >> 8];
+	if (e->env_id != envid || e->env_status == ENV_FREE) {
+		for (i = 0; i < NENV; i ++)
+			if (envs[i].env_id == envid && envs[i].env_status != ENV_FREE) {
+				e = &envs[i];
+				break;
+			}
+	}
+
+	if (i == NENV) {
 		*env_store = 0;
 		return -E_BAD_ENV;
 	}
@@ -94,7 +102,7 @@ env_init(void)
 	// LAB 3: Your code here.
 	int i;
 	for (i = NENV - 1; i >= 0; i--) {
-		envs[i].env_id = 0;
+		envs[i].env_id = -1;
 		envs[i].env_link = env_free_list;
 		envs[i].env_status = ENV_FREE;
 		env_free_list = envs + i;
@@ -181,7 +189,7 @@ env_setup_vm(struct Env *e)
 int
 env_alloc(struct Env **newenv_store, envid_t parent_id)
 {
-	int32_t generation;
+//	int32_t generation;
 	int r;
 	struct Env *e;
 
@@ -193,12 +201,16 @@ env_alloc(struct Env **newenv_store, envid_t parent_id)
 		return r;
 
 	// Generate an env_id for this environment.
-	generation = (e->env_id + (1 << ENVGENSHIFT)) & ~(NENV - 1);
-	if (generation <= 0)	// Don't create a negative env_id.
-		generation = 1 << ENVGENSHIFT;
-	e->env_id = generation | (e - envs);
-	//printk("envs: %x, e: %x, e->env_id: %x\n", envs, e, e->env_id);
-
+	e->env_id = (e - envs) << 8;
+#ifdef ENV_DEBUG
+	printk("generating env_id, %x\n", e->env_id);
+#endif
+	/*	generation = (e->env_id + (1 << ENVGENSHIFT)) & ~(NENV - 1);
+		if (generation <= 0)	// Don't create a negative env_id.
+			generation = 1 << ENVGENSHIFT;
+		e->env_id = generation | (e - envs);
+		//printk("envs: %x, e: %x, e->env_id: %x\n", envs, e, e->env_id);
+	*/
 	// Set the basic status variables.
 	e->env_parent_id = parent_id;
 	e->env_type = ENV_TYPE_USER;
@@ -372,7 +384,7 @@ env_create(unsigned offset_in_disk, enum EnvType type)
 #ifdef ENV_DEBUG
 	printk("\n%s, %d: Creating env with offset 0x%x in disk...\n", __FUNCTION__, __LINE__, offset_in_disk);
 #endif
-	int eid = env_alloc(&penv, 0);
+	int eid = env_alloc(&penv, -1);
 	load_icode(penv, offset_in_disk);
 #ifdef ENV_DEBUG
 	printk("%s, %d: Creating env completed. (eid = 0x%x)\n", __FUNCTION__, __LINE__, eid);

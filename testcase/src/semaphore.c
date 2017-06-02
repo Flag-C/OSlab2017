@@ -1,13 +1,13 @@
 #include "../../include/types.h"
 
-bool sem_open(char *name, int val, int type)
+bool sem_init(char *name, int val, int type)
 {
 	bool ret;
 	asm volatile("int $0x80" : "=a"(ret) : "a"(13), "b"(name), "c"(val), "d"(type));
 	return ret;
 }
 
-bool sem_close(char *name)
+bool sem_destory(char *name)
 {
 	bool ret;
 	asm volatile("int $0x80" : "=a"(ret) : "a"(14), "b"(name));

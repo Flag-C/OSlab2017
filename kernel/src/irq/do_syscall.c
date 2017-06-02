@@ -54,10 +54,10 @@ void do_syscall(struct TrapFrame *tf)
 		tf->eax = sys_getpid();
 		break;
 	case 13: // sem_open(char *name, int val, int type)
-		sem_open((char *)tf->ebx, tf->ecx, tf->edx);
+		sem_init((char *)tf->ebx, tf->ecx, tf->edx);
 		break;
 	case 14: // sem_close(char *name)
-		sem_close((char *)tf->ebx);
+		sem_destory((char *)tf->ebx);
 		break;
 	case 15: // sem_wait(char *name)
 		sem_wait((char *)tf->ebx);

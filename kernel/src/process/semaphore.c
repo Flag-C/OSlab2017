@@ -5,7 +5,7 @@
 semaphore sems[NR_SEM];
 semaphore *sem_free_list = NULL;
 
-void sem_init()
+void init_sem()
 {
 	int i;
 	for (i = 0; i < NR_SEM; i ++) {
@@ -28,7 +28,7 @@ static int sem_name2index(char *name)
 	return -1;
 }
 
-bool sem_open(char *name, int val, int type)
+bool sem_init(char *name, int val, int type)
 {
 	if (sem_name2index(name) != -1) {
 		printk("Semaphore %s already exists!\n", name);
@@ -48,7 +48,7 @@ bool sem_open(char *name, int val, int type)
 	return true;
 }
 
-bool sem_close(char *name)
+bool sem_destory(char *name)
 {
 	int i = sem_name2index(name);
 	if (i != -1) {

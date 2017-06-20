@@ -27,6 +27,9 @@ typedef struct dir {
 	Dirent entries[NR_ENTRY_PER_DIR];
 } Dir;
 
+#define MAX_FILE_SZ (BLOCK_SZ * BLOCK_SZ / sizeof(uint32_t))
+typedef int File;
+
 typedef struct inode {
 	uint32_t data_block_offsets[BLOCK_SZ / sizeof(uint32_t)];
 } Inode;

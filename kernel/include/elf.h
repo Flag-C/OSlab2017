@@ -39,5 +39,10 @@ in_long(short port)
 	return data;
 }
 
+static inline void
+out_long(short port, int data)
+{
+	asm volatile("outl %0,%1" : : "a" (data), "d" (port));
+}
 
 void load_udir(pde_t *pgdir);

@@ -24,7 +24,7 @@ int main(void)
     page_init();
     init_idt();
     init_intr();
-    init_fs();
+    init_fs(102400);
     fcb_init();
     env_init();
     init_sem();

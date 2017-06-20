@@ -217,6 +217,7 @@ env_alloc(struct Env **newenv_store, envid_t parent_id)
 	e->env_status = ENV_RUNNABLE;
 	e->env_runs = 0;
 	e->env_nr_thread = 1;
+	e->env_nr_fcb = 0;
 	memset(e->env_fcb_index, 0xff, sizeof(e->env_fcb_index));
 
 	// Clear out all the saved register state,

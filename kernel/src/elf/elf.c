@@ -84,3 +84,30 @@ readseg(unsigned char *pa, int count, int offset)
 	for (; pa < epa; pa += SECTSIZE, offset ++)
 		readsect(pa, offset);
 }
+
+void
+writesect(void *src, int offset)
+{
+	int i;
+	waitdisk();
+	out_byte(0x1F2, 1);
+	out_byte(0x1F3, offset);
+	out_byte(0x1F4, offset >> 8);
+	out_byte(0x1F5, offset >> 16);
+	out_byte(0x1F6, (offset >> 24) | 0xE0);
+	out_byte(0x1F7, 0x30);
+	waitdisk();
+	for (i = 0; i < SECTSIZE / 4; i ++)
+		out_long(0x1F0, ((int *)src)[i]);
+}
+
+void
+writeseg(unsigned char *pa, int count, int offset)
+{
+	unsigned char *epa;
+	epa = pa + count;
+	pa -= offset % SECTSIZE;
+	offset = (offset / SECTSIZE) + 1;
+	for (; pa < epa; pa += SECTSIZE, offset ++)
+		writesect(pa, offset);
+}

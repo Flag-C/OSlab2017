@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
 			}
 			fseek(diskfp, inode.data_block_offsets[cnt] * BLOCK_SZ, SEEK_SET);
 			fwrite(buf, 1, BLOCK_SZ, diskfp);
+			memset(buf, 0, sizeof(buf));
 			cnt++;
 		}
 		fclose(fp);

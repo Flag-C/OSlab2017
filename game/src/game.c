@@ -2,6 +2,7 @@
 #include "irq.h"
 #include "x86/x86.h"
 #include "game.h"
+#include "fs.h"
 
 #define FPS 30
 #define CHARACTER_PER_SECOND 2
@@ -36,13 +37,18 @@ get_fps()
 
 void game_main_loop()
 {
-	//printf("now game reached printf test %d\n", 1);
+	printf("First test the file system\n,Reading from in.txt:\n");
+	int f1;
+	f1 = file_open("in.txt", "r");
+	int a[20];
+	file_read(a, 20, f1);
+	file_close(f1);
+	printf("%s\n", a);
 	int now = 0, target;
 	int num_draw = 0;
 	table_location = 2;
 	bool redraw;
 	accel = FALSE;
-	//printf("now game reached printf test %d\n", 1);
 	while (TRUE) {
 		//wait_for_interrupt();
 		//printf("is in game");
@@ -51,7 +57,7 @@ void game_main_loop()
 			//enable_interrupt();
 			continue;
 		}
-		assert(now < get_tick_u());
+		//assert(now < get_tick_u());
 		target = get_tick_u(); /* now总是小于tick，因此我们需要“追赶”当前的时间 */
 		//enable_interrupt();
 

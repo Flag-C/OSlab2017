@@ -2,6 +2,7 @@
 #include "common.h"
 #include "assert.h"
 #include "process.h"
+#include "fs.h"
 
 void serial_printc(char ch);
 void write_screen(int start, int color, int length);
@@ -67,6 +68,18 @@ void do_syscall(struct TrapFrame *tf)
 		break;
 	case 17:
 		sys_create_thread(tf->ebx);
+		break;
+	case 18: // sys_fopen(const char *path, const char *mode)
+		tf->eax = sys_fopen((char *)tf->ebx, (char *)tf->ecx);
+		break;
+	case 19: // sys_fread(void *dst, int size, int index)
+		tf->eax = sys_fread((void *)tf->ebx, tf->ecx, tf->edx);
+		break;
+	case 20: // sys_fwrite(void *src, int size, int index)
+		tf->eax = sys_fwrite((void *)tf->ebx, tf->ecx, tf->edx);
+		break;
+	case 21: // sys_fclose(int index)
+		tf->eax =  sys_fclose(tf->ebx);
 		break;
 	case 4098: break;
 	default:

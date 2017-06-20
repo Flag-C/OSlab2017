@@ -65,6 +65,7 @@ struct Env {
 	unsigned env_status;		// Status of the environment
 	uint32_t env_runs;		    // Number of times environment has run
 	uint32_t env_nr_thread;     // Number of threads
+	int env_nr_fcb;
 	int env_fcb_index[NR_FILE];
 
 	// Address space

@@ -82,9 +82,9 @@ $(IMAGE): $(BOOT) $(KERNEL) $(GAME) data.disk
 	@$(DD) if=$(KERNEL) of=$(IMAGE) seek=1 conv=notrunc > /dev/null # 填充 kernel, 跨过 mbr
 	@$(DD) if=data.disk of=$(IMAGE) seek=201 conv=notrunc   > /dev/null
 
-data.disk : formatting.c
-	gcc $^ -o formatting
-	./formatting $@ $(GAME) in.txt out.txt
+data.disk : formatting.c $(BOOT) $(KERNEL) $(GAME)
+	gcc $< -o formatting
+	./formatting $@ $(GAME) res.txt out.txt
 
 $(BOOT): $(BOOT_O)
 	$(LD) -e start -Ttext=0x7C00 -m elf_i386 -nostdlib -o $@.out $^

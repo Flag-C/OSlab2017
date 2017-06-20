@@ -1,5 +1,5 @@
 #include "game.h"
-#include "string.h"
+#include "libstring.h"
 #include "resources.h"
 extern char font8x8_basic[128][8];
 /* 绘制屏幕上的内容。
@@ -83,18 +83,17 @@ redraw_screen()
 		for (j = 0; j < table_length; j ++)
 			if (accel) draw_pixel_u(SCR_HEIGHT - 16 + i, table_location + j, 200);
 			else draw_pixel_u(SCR_HEIGHT - 16 + i, table_location + j, 14);
-	draw_string(itoa(get_time()), SCR_HEIGHT - 8 - 8, 16, 48);
-	hit = itoa(get_hit());
-	draw_string("He:+", 8, SCR_WIDTH - strlen(hit) * 8 - 48, 225);
-	draw_string(hit, 8, SCR_WIDTH - strlen(hit) * 8 - 16, 225);
+	draw_string(libitoa(get_time()), SCR_HEIGHT - 8 - 8, 16, 48);
+	hit = libitoa(get_hit());
+	draw_string("He:+", 8, SCR_WIDTH - libstrlen(hit) * 8 - 48, 225);
+	draw_string(hit, 8, SCR_WIDTH - libstrlen(hit) * 8 - 16, 225);
 	draw_string("s", 8, SCR_WIDTH - 16, 225);
-	miss = itoa(get_miss());
-	draw_string("You:-", SCR_HEIGHT - 16, SCR_WIDTH - strlen(miss) * 8 - 56, 130);
-	draw_string(miss, SCR_HEIGHT - 16, SCR_WIDTH - strlen(miss) * 8 - 16, 130);
-	draw_string("s", SCR_HEIGHT - 16, SCR_WIDTH - 16, 130);
-	draw_string(itoa(get_fps()), 8, 8, 255);
-	draw_string("FPS", 8, strlen(itoa(get_fps())) * 8 + 8, 255);
-	//printk("%d", table_location);
+	miss = libitoa(get_miss());
+	//draw_string("You:-", SCR_HEIGHT - 16, SCR_WIDTH - libstrlen(miss) * 8 - 56, 130);
+	//draw_string(miss, SCR_HEIGHT - 16, SCR_WIDTH - libstrlen(miss) * 8 - 16, 130);
+	//draw_string("s", SCR_HEIGHT - 16, SCR_WIDTH - 16, 130);
+	//draw_string(libitoa(get_fps()), 8, 8, 255);
+	//draw_string("FPS", 8, libstrlen(libitoa(get_fps())) * 8 + 8, 255);
 
 	display_buffer_u(); /* 绘制缓冲区 */
 }

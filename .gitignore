@@ -6,6 +6,7 @@
 *.bin
 *.d
 /obj
+*.disk
 
 # Precompiled Headers
 *.gch

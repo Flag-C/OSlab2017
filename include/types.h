@@ -2,6 +2,7 @@
 #define __TYPES_H__
 
 #include "const.h"
+#include "stdarg.h"
 
 #ifndef NULL
 #define NULL ((void*) 0)
@@ -36,7 +37,7 @@ typedef uint32_t size_t;
 typedef int32_t ssize_t;
 
 // off_t is used for file offsets and lengths.
-typedef int32_t off_t;
+//typedef int32_t off_t;
 
 // Efficient min and max operations
 #define MIN(_a, _b)						\

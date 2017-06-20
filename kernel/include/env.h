@@ -40,6 +40,7 @@ enum {
 #define LOG2NENV		5
 #define NENV			(1 << LOG2NENV)
 #define ENVX(envid)		((envid) & (NENV - 1))
+#define NR_FILE			16
 
 // Values of env_status in struct Env
 enum {
@@ -64,6 +65,7 @@ struct Env {
 	unsigned env_status;		// Status of the environment
 	uint32_t env_runs;		    // Number of times environment has run
 	uint32_t env_nr_thread;     // Number of threads
+	int env_fcb_index[NR_FILE];
 
 	// Address space
 	pde_t *env_pgdir;		// Kernel virtual address of page dir

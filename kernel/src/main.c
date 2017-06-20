@@ -5,6 +5,7 @@
 #include "device/timer.h"
 #include "device/font.h"
 #include "device/palette.h"
+#include "disk.h"
 #include "env.h"
 #include "process.h"
 
@@ -15,13 +16,16 @@ void env_init();
 void timer_event(void);
 void keyboard_event(int scan_code);
 void init_sem();
-
+void init_fs();
+void fcb_init();
 
 int main(void)
 {
     page_init();
     init_idt();
     init_intr();
+    init_fs();
+    fcb_init();
     env_init();
     init_sem();
     init_segment();
@@ -31,8 +35,9 @@ int main(void)
     //enable_interrupt();
 
     set_tss_esp0(0xc0280000 - 4);
-    env_create(102400, 0);
-    env_create(102400 + 10240, 0);
+    //env_create(102400, 0);
+    //env_create(102400 + 10240, 0);
+    env_create(102400 + sizeof(Bitmap) + sizeof(Dir) + sizeof(Inode), 0);
     printk("start\n");
     schedule_process();
     printk("kernel shouldn't reach here \n");

@@ -26,10 +26,10 @@ void
 timer_event(void)
 {
 	tick ++;
-	if (tick % 10 == 0) {
+	/*if (tick % 10 == 0) {
 		curenv->env_status = ENV_RUNNABLE;
 		schedule_process();
-	}
+	}*/
 }
 
 int

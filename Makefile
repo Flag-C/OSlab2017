@@ -76,8 +76,15 @@ TESTCASE_S := $(shell find $(TESTCASE_DIR) -name "*.S")
 TESTCASE_O := $(TESTCASE_C:%.c=$(OBJ_DIR)/%.o)
 TESTCASE_O += $(TESTCASE_S:%.S=$(OBJ_DIR)/%.o)
 
-$(IMAGE): $(BOOT) $(KERNEL) $(IDLE) $(TESTCASE)
-	@cat $(BOOT) $(KERNEL) $(IDLE) $(TESTCASE) > $(IMAGE)
+$(IMAGE): $(BOOT) $(KERNEL) $(GAME) data.disk
+	@$(DD) if=/dev/zero of=$(IMAGE) count=5000         > /dev/null # 准备磁盘文件
+	@$(DD) if=$(BOOT) of=$(IMAGE) conv=notrunc          > /dev/null # 填充 boot loader
+	@$(DD) if=$(KERNEL) of=$(IMAGE) seek=1 conv=notrunc > /dev/null # 填充 kernel, 跨过 mbr
+	@$(DD) if=data.disk of=$(IMAGE) seek=201 conv=notrunc   > /dev/null
+
+data.disk : formatting.c
+	gcc $^ -o formatting
+	./formatting $@ $(GAME) in.txt out.txt
 
 $(BOOT): $(BOOT_O)
 	$(LD) -e start -Ttext=0x7C00 -m elf_i386 -nostdlib -o $@.out $^
@@ -156,6 +163,9 @@ clean:
 	@rm -rf $(IMAGE)   2> /dev/null
 	@rm -rf $(IDLE)	   2> /dev/null
 	@rm -rf $(TESTCASE) 2> /dev/null
+
+cleandisk:
+	rm -rf data.disk  2> /dev/null
 
 submit: clean
 	cd .. && tar cvj $(shell pwd | grep -o '[^/]*$$') > $(STU_ID).tar.bz2

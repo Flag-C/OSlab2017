@@ -120,7 +120,31 @@ int sys_fwrite(void *src, int size, int index)
 	}
 	return size;
 }
-
+int sys_fseek(int index, int offset, int whence)
+{
+	FCB *curfcb = &fcbs[index];
+	int end;
+	if (whence == SEEK_SET)
+		end = offset;
+	else if (whence == SEEK_CUR)
+		end = curfcb->fcb_seek + offset;
+	else if (whence == SEEK_END)
+		end = curfcb->fcb_file_sz + offset;
+	else {
+		printk("Error: whence should be SEEK_SET or SEEK_CUR or SEEK_END!\n");
+		return -1;
+	}
+	if (end < 0) {
+		printk("Error: the location sought is below 0!\n");
+		return -1;
+	}
+	if (end > curfcb->fcb_file_sz) {
+		printk("Error: the location sought exceeds file size!\n");
+		return -1;
+	}
+	curfcb->fcb_seek = end;
+	return 0;
+}
 int sys_fclose(int index)
 {
 	int i;

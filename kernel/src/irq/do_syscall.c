@@ -81,6 +81,9 @@ void do_syscall(struct TrapFrame *tf)
 	case 21: // sys_fclose(int index)
 		tf->eax =  sys_fclose(tf->ebx);
 		break;
+	case 22: // sys_fseek(int index, int offset, int whence)
+		tf->eax = sys_fseek(tf->ebx, tf->ecx, tf->edx);
+		break;
 	case 4098: break;
 	default:
 		printk("Undefined system call: %d %d\n", tf->eax, tf->ebx);

@@ -84,7 +84,7 @@ $(IMAGE): $(BOOT) $(KERNEL) $(GAME) data.disk
 
 data.disk : formatting.c $(BOOT) $(KERNEL) $(GAME)
 	gcc $< -o formatting
-	./formatting $@ $(GAME) res.txt out.txt
+	./formatting $@ $(GAME) in.txt res.txt out.txt
 
 $(BOOT): $(BOOT_O)
 	$(LD) -e start -Ttext=0x7C00 -m elf_i386 -nostdlib -o $@.out $^

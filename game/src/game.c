@@ -38,12 +38,17 @@ get_fps()
 void game_main_loop()
 {
 	printf("First test the file system\n,Reading from in.txt:\n");
-	int f1;
-	f1 = file_open("in.txt", "r");
-	int a[20];
-	file_read(a, 20, f1);
-	file_close(f1);
-	printf("%s\n", a);
+	int fp1, fp2;
+	fp1 = file_open("in.txt", "r");
+	//fp2 = file_open("out.txt", "w");
+	char buf[10];
+	file_seek(fp1, 3, SEEK_SET);
+	//file_read(buf, 5, fp1);
+	//file_seek(fp2, 0, SEEK_END);
+	//file_write(buf, 540, fp2);
+	file_close(fp1);
+	//printf("%s\n", buf);
+	//file_close(fp2);
 	int now = 0, target;
 	int num_draw = 0;
 	table_location = 2;

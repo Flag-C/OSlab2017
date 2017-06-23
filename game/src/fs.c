@@ -19,6 +19,13 @@ int file_write(void *src, int size, int index)
 	return ret;
 }
 
+int file_seek(int index, int offset, int whence)
+{
+	int ret;
+	asm volatile("int $0x80" : "=a"(ret) : "a"(22), "b"(index), "c"(offset), "d"(whence));
+	return ret;
+}
+
 int file_close(int index)
 {
 	int ret;

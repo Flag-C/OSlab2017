@@ -14,7 +14,7 @@ void cmd_ls(const char cmd[])
 		if (cmd[i + 1] == 'a') {
 			ls_a = true;
 			cmd_ls(cmd + i + 2);
-		} else if (cmd[1] == 'l') {
+		} else if (cmd[i + 1] == 'l') {
 			ls_l = true;
 			cmd_ls(cmd + i + 2);
 		}
@@ -33,10 +33,17 @@ void cmd_handler(const char cmd[])
 		char res[512];
 		show_rootdir(ls_l, ls_a, res);
 
-		for (i = 0; res[i]; i ++) {
-			shell_print_string(res + i, 9);
-			shell_print_string(" ", 9);
-			i += strlen(res + i);
+		if (!ls_l) {
+			for (i = 0; res[i]; i ++) {
+				shell_print_string(res + i, 7);
+				shell_print_string("  ", 7);
+				i += strlen(res + i);
+			}
+		} else {
+			for (i = 0; res[i]; i ++) {
+				shell_print_string(res + i, 7);
+				i += strlen(res + i);
+			}
 		}
 		shell_enter();
 		printf("\n");

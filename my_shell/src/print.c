@@ -18,8 +18,11 @@ void shell_enter()
 void shell_print_string(char str[], int color)
 {
 	int len = strlen(str);
-	if (str[0] == '\n')
+	if (str[0] == '\n') {
 		shell_enter();
+		printf("\n");
+		return;
+	}
 	if (position_y + len > 39)
 		shell_enter();
 	draw_string(str, position_x << 3, position_y << 3, color);

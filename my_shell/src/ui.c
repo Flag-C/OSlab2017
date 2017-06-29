@@ -25,7 +25,7 @@ int main()
 			if (cur_key != -1) {
 				key_pressing = true;
 				input_str[input_len] = key_sequence[cur_key];
-				shell_print_string(input_str + input_len, 7);
+				shell_print_string(input_str + input_len, 9);
 				input_len ++;
 				if (cur_key == KEY_ENTER) {
 					cmd_handler(input_str);

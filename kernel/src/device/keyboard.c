@@ -25,11 +25,16 @@ press_key(int scan_code)
 }
 
 void
-release_key(int index)
+release_key(int scan_code)
 {
-	assert(0 <= index && index < 40);
-	letter_pressed[index] = FALSE;
+	int i;
+	for (i = 0; i < 40; i ++) {
+		if (letter_code[i] + 0x80 == scan_code) {
+			letter_pressed[i] = false;
+		}
+	}
 }
+
 
 bool
 query_key(int index)
@@ -60,5 +65,8 @@ void
 keyboard_event(int code)
 {
 	key_code = code;
-	press_key(code);
+	if (key_code < 0x80)
+		press_key(key_code);
+	else
+		release_key(key_code);
 }

@@ -161,8 +161,8 @@ int sys_fclose(int index)
 
 void sys_show_rootdir(bool ls_l, bool ls_a, char res[512])
 {
-	int p, i, j, s, sz;
-	memset(res, 0, sizeof(res));
+	int p, i, j, sz;
+	memset(res, 0, 512);
 	if (!ls_l) {
 		p = 0;
 		if (ls_a) {
@@ -188,17 +188,15 @@ void sys_show_rootdir(bool ls_l, bool ls_a, char res[512])
 				for (j = 0; j < 21; j ++)
 					res[p + j] = ' ';
 				strcpy(res + p, rootdir.entries[i].file_name);
+				res[p + strlen(rootdir.entries[i].file_name)] = ' ';
 				p += 15;
-				s = 1;
-				j = 6;
+				j = 5;
 				sz = rootdir.entries[i].file_size;
 				while (sz > 0) {
-					s *= 10;
 					res[p + j] = sz % 10 + '0';
 					sz /= 10;
 					j --;
 				}
-				res[p + 7] = '\n';
 				p += 7;
 			}
 		}

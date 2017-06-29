@@ -14,9 +14,8 @@ int main()
 
 	bool key_pressing = false;
 	int cur_key;
-	char input_str[50] = "";
+	char input_str[512] = "";
 	int  input_len = 0;
-	init_screen();
 
 	shell_print_string("FlagC@MyShell:~$ ", 3);
 	while (1) {

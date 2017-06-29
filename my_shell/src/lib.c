@@ -3,9 +3,15 @@
 #include "../include/lib.h"
 
 extern char font8x8_basic[128][8];
-void show_rootdir(bool ls_l, bool ls_a, char res[512])
+
+void show_rootdir(bool ls_l, bool ls_a)
 {
-	asm volatile("int $0x80" : : "a"(24), "b"(ls_l), "c"(ls_a), "d"(res));
+	asm volatile("int $0x80" : : "a"(24), "b"(ls_l), "c"(ls_a));
+}
+
+void shell_print_string(char str[], int color)
+{
+	asm volatile("int $0x80" : : "a"(25), "b"(str), "c"(color));
 }
 
 int file_open(const char *path, const char *mode)

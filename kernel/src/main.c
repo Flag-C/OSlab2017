@@ -18,6 +18,7 @@ void keyboard_event(int scan_code);
 void init_sem();
 void init_fs();
 void fcb_init();
+void screen_init();
 
 int main(void)
 {
@@ -33,7 +34,7 @@ int main(void)
     init_timer();
     write_palette();
     //enable_interrupt();
-
+    screen_init();
     set_tss_esp0(0xc0280000 - 4);
     //env_create(102400, 0);
     //env_create(102400 + 10240, 0);

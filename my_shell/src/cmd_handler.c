@@ -2,6 +2,8 @@
 #include "types.h"
 #include "../include/lib.h"
 #include "../include/cmd.h"
+#include "../include/fs.h"
+
 
 static bool ls_a = false, ls_l = false;
 void cmd_ls(const char cmd[])
@@ -21,6 +23,21 @@ void cmd_ls(const char cmd[])
 	}
 }
 
+void cmd_echo(const char content[])
+{
+	int i, newi = 0;
+	char new[512];
+	for (i = 0; i < strlen(content);) {
+		new[newi++] = content[i];
+		if (content[i] == ' ')
+			for (; content[i] == ' '; i++);
+		else
+			i++;
+	}
+	new[newi] = '\0';
+	shell_print_string(new, 7);
+}
+
 void cmd_handler(const char cmd[])
 {
 	int i = 0;
@@ -31,22 +48,10 @@ void cmd_handler(const char cmd[])
 		cmd_ls(cmd + i + 2);
 
 		char res[512];
-		show_rootdir(ls_l, ls_a, res);
-
-		if (!ls_l) {
-			for (i = 0; res[i]; i ++) {
-				shell_print_string(res + i, 7);
-				shell_print_string("  ", 7);
-				i += strlen(res + i);
-			}
-		} else {
-			for (i = 0; res[i]; i ++) {
-				shell_print_string(res + i, 7);
-				i += strlen(res + i);
-			}
-		}
-		shell_enter();
-		printf("\n");
+		show_rootdir(ls_l, ls_a);
+	} else if (cmd[i] == 'e' && cmd[i + 1] == 'c' && cmd[i + 2] == 'h' && cmd[i + 3] == 'o') {
+		for (i = i + 4; cmd[i] == ' '; i ++);
+		cmd_echo(cmd + i);
 	}
 }
 

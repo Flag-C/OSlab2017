@@ -2,6 +2,7 @@
 #include "fcb.h"
 #include "fs.h"
 #include "env.h"
+#include "screen.h"
 
 void readseg(unsigned char *, int, int);
 void writeseg(unsigned char *, int, int);
@@ -159,45 +160,35 @@ int sys_fclose(int index)
 	return 0;
 }
 
-void sys_show_rootdir(bool ls_l, bool ls_a, char res[512])
+void sys_show_rootdir(bool ls_l, bool ls_a)
 {
-	int p, i, j, sz;
-	memset(res, 0, 512);
+	int i, j, sz;
+	char sz_ch[21] = "                    ";
 	if (!ls_l) {
-		p = 0;
-		if (ls_a) {
-			strcpy(res, ".");
-			strcpy(res + 2, "..");
-			p = 5;
-		}
-		for (i = 0; i < NR_ENTRY_PER_DIR; i ++) {
+		if (ls_a)
+			screen_print_string(".  ..  ", 7);
+		for (i = 0; i < NR_ENTRY_PER_DIR; i ++)
 			if (rootdir.entries[i].file_size > 0) {
-				strcpy(res + p, rootdir.entries[i].file_name);
-				p += strlen(rootdir.entries[i].file_name) + 1;
+				screen_print_string(rootdir.entries[i].file_name, 7);
+				screen_print_string("  ", 7);
 			}
-		}
+		screen_print_string("\n", 7);
 	} else {
-		p = 0;
-		if (ls_a) {
-			strcpy(res, ".                4096");
-			strcpy(res + 22, "..               4096");
-			p = 44;
-		}
+		if (ls_a)
+			screen_print_string(".               4096\n..              4096\n", 7);
 		for (i = 0; i < NR_ENTRY_PER_DIR; i ++) {
 			if (rootdir.entries[i].file_size > 0) {
-				for (j = 0; j < 21; j ++)
-					res[p + j] = ' ';
-				strcpy(res + p, rootdir.entries[i].file_name);
-				res[p + strlen(rootdir.entries[i].file_name)] = ' ';
-				p += 15;
-				j = 5;
+				screen_print_string(rootdir.entries[i].file_name, 7);
+				j = 19 - strlen(rootdir.entries[i].file_name);
 				sz = rootdir.entries[i].file_size;
+				strcpy(sz_ch, "                    ");
 				while (sz > 0) {
-					res[p + j] = sz % 10 + '0';
+					sz_ch[j] = sz % 10 + '0';
 					sz /= 10;
 					j --;
 				}
-				p += 7;
+				screen_print_string(sz_ch, 7);
+				screen_print_string("\n", 7);
 			}
 		}
 	}

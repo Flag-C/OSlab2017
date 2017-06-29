@@ -16,8 +16,8 @@ void prepare_buffer(void);
 void display_buffer(void);
 void sys_create_thread();
 int see_if_any_key_pressed();
-void sys_show_rootdir(bool ls_l, bool ls_a, char res[512]);
-
+void sys_show_rootdir(bool ls_l, bool ls_a);
+void screen_print_string(char[], int);
 
 void do_syscall(struct TrapFrame *tf)
 {
@@ -90,8 +90,11 @@ void do_syscall(struct TrapFrame *tf)
 	case 23: // see_if_any_key_pressed()
 		tf->eax = see_if_any_key_pressed();
 		break;
-	case 24: // sys_show_rootdir(bool ls_l, bool ls_a, char res[512])
-		sys_show_rootdir(tf->ebx, tf->ecx , (char *)tf->edx);
+	case 24:
+		sys_show_rootdir(tf->ebx, tf->ecx);
+		break;
+	case 25:
+		screen_print_string((char *)tf->ebx, tf->ecx);
 		break;
 	case 4098: break;
 	default:

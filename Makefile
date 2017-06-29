@@ -1,9 +1,13 @@
 BOOT   := boot.bin
 KERNEL := kernel.bin
 GAME   := game.bin
+MY_SHELL   := my_shell.bin
 IDLE   := idel.bin
 TESTCASE := testcase.bin
 IMAGE  := disk.bin
+
+MY_FILES := in.txt
+MY_FILES += out.txt
 
 CC      := gcc
 LD      := ld
@@ -36,12 +40,14 @@ BOOT_DIR       := boot
 KERNEL_DIR     := kernel
 GAME_DIR       := game
 IDLE_DIR       := idle
+MY_SHELL_DIR   := my_shell
 TESTCASE_DIR   := testcase
 OBJ_LIB_DIR    := $(OBJ_DIR)/$(LIB_DIR)
 OBJ_BOOT_DIR   := $(OBJ_DIR)/$(BOOT_DIR)
 OBJ_KERNEL_DIR := $(OBJ_DIR)/$(KERNEL_DIR)
 OBJ_GAME_DIR   := $(OBJ_DIR)/$(GAME_DIR)
 OBJ_IDLE_DIR   := $(OBJ_DIR)/$(IDLE_DIR)
+OBJ_MY_SHELL_DIR   := $(OBJ_DIR)/$(MY_SHELL_DIR)
 OBJ_TESTCASE_DIR   := $(OBJ_DIR)/$(TESTCASE_DIR)
 
 
@@ -66,6 +72,11 @@ GAME_S := $(shell find $(GAME_DIR) -name "*.S")
 GAME_O := $(GAME_C:%.c=$(OBJ_DIR)/%.o)
 GAME_O += $(GAME_S:%.S=$(OBJ_DIR)/%.o)
 
+MY_SHELL_C := $(shell find $(MY_SHELL_DIR) -name "*.c")
+MY_SHELL_S := $(shell find $(MY_SHELL_DIR) -name "*.S")
+MY_SHELL_O := $(MY_SHELL_C:%.c=$(OBJ_DIR)/%.o)
+MY_SHELL_O += $(MY_SHELL_S:%.S=$(OBJ_DIR)/%.o)
+
 IDLE_C := $(shell find $(IDLE_DIR) -name "*.c")
 IDLE_S := $(shell find $(IDLE_DIR) -name "*.S")
 IDLE_O := $(IDLE_C:%.c=$(OBJ_DIR)/%.o)
@@ -76,15 +87,15 @@ TESTCASE_S := $(shell find $(TESTCASE_DIR) -name "*.S")
 TESTCASE_O := $(TESTCASE_C:%.c=$(OBJ_DIR)/%.o)
 TESTCASE_O += $(TESTCASE_S:%.S=$(OBJ_DIR)/%.o)
 
-$(IMAGE): $(BOOT) $(KERNEL) $(GAME) data.disk
+$(IMAGE): $(BOOT) $(KERNEL) data.disk
 	@$(DD) if=/dev/zero of=$(IMAGE) count=5000         > /dev/null # 准备磁盘文件
 	@$(DD) if=$(BOOT) of=$(IMAGE) conv=notrunc          > /dev/null # 填充 boot loader
 	@$(DD) if=$(KERNEL) of=$(IMAGE) seek=1 conv=notrunc > /dev/null # 填充 kernel, 跨过 mbr
 	@$(DD) if=data.disk of=$(IMAGE) seek=201 conv=notrunc   > /dev/null
 
-data.disk : formatting.c $(BOOT) $(KERNEL) $(GAME)
+data.disk : formatting.c $(MY_SHELL) $(MY_FILES)
 	gcc $< -o formatting
-	./formatting $@ $(GAME) in.txt res.txt out.txt
+	./formatting $@ $(MY_SHELL) $(MY_FILES)
 
 $(BOOT): $(BOOT_O)
 	$(LD) -e start -Ttext=0x7C00 -m elf_i386 -nostdlib -o $@.out $^
@@ -104,6 +115,9 @@ $(KERNEL): $(KERNEL_LD_SCRIPT)
 $(KERNEL): $(KERNEL_O) $(LIB_O)
 	$(LD) -m elf_i386 -T $(KERNEL_LD_SCRIPT) -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 	kernel/genkernel.pl $@
+
+$(MY_SHELL): $(MY_SHELL_O) $(LIB_O)
+	$(LD) -e main -m elf_i386 -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 
 $(GAME) : $(GAME_LD_SCRIPT)
 $(GAME) : $(GAME_O) $(LIB_O)
@@ -126,6 +140,10 @@ $(OBJ_KERNEL_DIR)/%.o: $(KERNEL_DIR)/%.[cS]
 	$(CC) $(CFLAGS) $< -o $@
 
 $(OBJ_GAME_DIR)/%.o: $(GAME_DIR)/%.[cS]
+	mkdir -p $(OBJ_DIR)/$(dir $<)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_MY_SHELL_DIR)/%.o: $(MY_SHELL_DIR)/%.[cS]
 	mkdir -p $(OBJ_DIR)/$(dir $<)
 	$(CC) $(CFLAGS) $< -o $@
 
@@ -162,6 +180,7 @@ clean:
 	@rm -rf $(KERNEL)  2> /dev/null
 	@rm -rf $(IMAGE)   2> /dev/null
 	@rm -rf $(IDLE)	   2> /dev/null
+	@rm -rf $(MY_SHELL) 2> /dev/null
 	@rm -rf $(TESTCASE) 2> /dev/null
 
 cleandisk:

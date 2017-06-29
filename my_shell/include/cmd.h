@@ -1,0 +1,1 @@
+void show_rootdir(bool ls_l, bool ls_a, char res[512]);

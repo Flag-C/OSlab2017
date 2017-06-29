@@ -158,3 +158,49 @@ int sys_fclose(int index)
 	fcb_free(curfcb);
 	return 0;
 }
+
+void sys_show_rootdir(bool ls_l, bool ls_a, char res[512])
+{
+	int p, i, j, s, sz;
+	memset(res, 0, sizeof(res));
+	if (!ls_l) {
+		p = 0;
+		if (ls_a) {
+			strcpy(res, ".");
+			strcpy(res + 2, "..");
+			p = 5;
+		}
+		for (i = 0; i < NR_ENTRY_PER_DIR; i ++) {
+			if (rootdir.entries[i].file_size > 0) {
+				strcpy(res + p, rootdir.entries[i].file_name);
+				p += strlen(rootdir.entries[i].file_name) + 1;
+			}
+		}
+	} else {
+		p = 0;
+		if (ls_a) {
+			strcpy(res, ".                4096");
+			strcpy(res + 22, "..               4096");
+			p = 44;
+		}
+		for (i = 0; i < NR_ENTRY_PER_DIR; i ++) {
+			if (rootdir.entries[i].file_size > 0) {
+				for (j = 0; j < 21; j ++)
+					res[p + j] = ' ';
+				strcpy(res + p, rootdir.entries[i].file_name);
+				p += 15;
+				s = 1;
+				j = 6;
+				sz = rootdir.entries[i].file_size;
+				while (sz > 0) {
+					s *= 10;
+					res[p + j] = sz % 10 + '0';
+					sz /= 10;
+					j --;
+				}
+				res[p + 7] = '\n';
+				p += 7;
+			}
+		}
+	}
+}

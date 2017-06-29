@@ -163,7 +163,7 @@ int sys_fclose(int index)
 void sys_show_rootdir(bool ls_l, bool ls_a)
 {
 	int i, j, sz;
-	char sz_ch[21] = "                    ";
+	char sz_ch[23] = "                      ";
 	if (!ls_l) {
 		if (ls_a)
 			screen_print_string(".  ..  ", 7);
@@ -175,21 +175,55 @@ void sys_show_rootdir(bool ls_l, bool ls_a)
 		screen_print_string("\n", 7);
 	} else {
 		if (ls_a)
-			screen_print_string(".               4096\n..              4096\n", 7);
+			screen_print_string(".               4096  00:00:00\n..              4096  00:00:00\n", 7);
 		for (i = 0; i < NR_ENTRY_PER_DIR; i ++) {
 			if (rootdir.entries[i].file_size > 0) {
 				screen_print_string(rootdir.entries[i].file_name, 7);
 				j = 19 - strlen(rootdir.entries[i].file_name);
 				sz = rootdir.entries[i].file_size;
-				strcpy(sz_ch, "                    ");
+				strcpy(sz_ch, "                      ");
+				sz_ch[j + 3] = 0;
 				while (sz > 0) {
 					sz_ch[j] = sz % 10 + '0';
 					sz /= 10;
 					j --;
 				}
 				screen_print_string(sz_ch, 7);
-				screen_print_string("\n", 7);
+				unsigned t = rootdir.entries[i].file_time;
+				strcpy(sz_ch, "  :  :  \n");
+				sz_ch[0] = '0' + t / 36000;
+				sz_ch[1] = '0' + (t / 3600) % 10;
+				sz_ch[3] = '0' + ((t / 60) % 60) / 10;
+				sz_ch[4] = '0' + ((t / 60) % 60) % 10;
+				sz_ch[6] = '0' + (t % 60) / 10;
+				sz_ch[7] = '0' + t % 10;
+				screen_print_string(sz_ch, 7);
 			}
 		}
 	}
+}
+
+void schedule_process();
+void sys_frun(char name[])
+{
+	int i;
+	char dst[BLOCK_SZ];
+	for (i = 0; i < NR_ENTRY_PER_DIR; i ++)
+		if (strcmp(rootdir.entries[i].file_name, name) == 0) {
+			readseg((void *)dst, BLOCK_SZ, fs_offset_in_disk + rootdir.entries[i].inode_offset * BLOCK_SZ);
+			env_create(fs_offset_in_disk + * ((int *)dst)*BLOCK_SZ, 0);
+			schedule_process();
+			break;
+		}
+}
+
+unsigned get_tick();
+void sys_ftouch(char name[])
+{
+	int i;
+	for (i = 0; i < NR_ENTRY_PER_DIR; i ++)
+		if (strcmp(rootdir.entries[i].file_name, name) == 0) {
+			rootdir.entries[i].file_time = get_tick();
+			break;
+		}
 }

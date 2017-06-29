@@ -8,7 +8,12 @@ void show_rootdir(bool ls_l, bool ls_a)
 {
 	asm volatile("int $0x80" : : "a"(24), "b"(ls_l), "c"(ls_a));
 }
-
+unsigned get_time()
+{
+	unsigned ret;
+	asm volatile("int $0x80" : "=a"(ret) : "a"(7));
+	return ret;
+}
 void shell_print_string(char str[], int color)
 {
 	asm volatile("int $0x80" : : "a"(25), "b"(str), "c"(color));

@@ -3,6 +3,7 @@
 #include "../include/lib.h"
 #include "../include/keyboard.h"
 #include "../include/fs.h"
+#include "../include/cmd.h"
 
 void cmd_handler(const char cmd[]);
 
@@ -16,7 +17,8 @@ int main()
 	int cur_key;
 	char input_str[512] = "";
 	int  input_len = 0;
-
+	unsigned t = get_time();
+	printf("(%d:%d:%d) ", t / 3600, (t / 60) % 60, t % 60);
 	shell_print_string("FlagC@MyShell:~$ ", 3);
 	while (1) {
 		if (!key_pressing) {
@@ -30,6 +32,8 @@ int main()
 					cmd_handler(input_str);
 					memset(input_str, 0, sizeof(input_str));
 					input_len = 0;
+					t = get_time();
+					printf("(%d:%d:%d) ", t / 3600, (t / 60) % 60, t % 60);
 					shell_print_string("FlagC@MyShell:~$ ", 3);
 				}
 			}

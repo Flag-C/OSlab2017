@@ -18,6 +18,8 @@ void sys_create_thread();
 int see_if_any_key_pressed();
 void sys_show_rootdir(bool ls_l, bool ls_a);
 void screen_print_string(char[], int);
+void sys_frun(char[]);
+void sys_ftouch(char[]);
 
 void do_syscall(struct TrapFrame *tf)
 {
@@ -95,6 +97,12 @@ void do_syscall(struct TrapFrame *tf)
 		break;
 	case 25:
 		screen_print_string((char *)tf->ebx, tf->ecx);
+		break;
+	case 26:
+		sys_frun((char *)tf->ebx);
+		break;
+	case 27:
+		sys_ftouch((char *)tf->ebx);
 		break;
 	case 4098: break;
 	default:

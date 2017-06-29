@@ -35,5 +35,5 @@ timer_event(void)
 int
 get_tick()
 {
-	return tick;
+	return tick / 18;
 }

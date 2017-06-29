@@ -8,6 +8,7 @@ IMAGE  := disk.bin
 
 MY_FILES := in.txt
 MY_FILES += out.txt
+MY_FILES += hello.bin
 
 CC      := gcc
 LD      := ld
@@ -86,6 +87,9 @@ TESTCASE_C := $(shell find $(TESTCASE_DIR) -name "*.c")
 TESTCASE_S := $(shell find $(TESTCASE_DIR) -name "*.S")
 TESTCASE_O := $(TESTCASE_C:%.c=$(OBJ_DIR)/%.o)
 TESTCASE_O += $(TESTCASE_S:%.S=$(OBJ_DIR)/%.o)
+
+hello.bin : hello.c
+	gcc $< -o hello.bin
 
 $(IMAGE): $(BOOT) $(KERNEL) data.disk
 	@$(DD) if=/dev/zero of=$(IMAGE) count=5000         > /dev/null # 准备磁盘文件

@@ -18,9 +18,10 @@ typedef struct bitmap {
 } Bitmap;
 
 typedef struct dirent {
-	char file_name[56];
+	char file_name[52];
 	uint32_t file_size;
 	uint32_t inode_offset;
+	uint32_t file_time;
 } Dirent;
 
 typedef struct dir {

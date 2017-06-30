@@ -25,7 +25,10 @@ int main()
 			cur_key = see_if_any_key_pressed();
 			if (cur_key != -1) {
 				key_pressing = true;
-				input_str[input_len] = key_sequence[cur_key];
+				if (cur_key >= 0x1000)
+					input_str[input_len] = shift_key_sequence[cur_key - 0x1000];
+				else
+					input_str[input_len] = key_sequence[cur_key];
 				shell_print_string(input_str + input_len, 9);
 				input_len ++;
 				if (cur_key == KEY_ENTER) {

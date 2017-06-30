@@ -28,6 +28,8 @@ void cmd_echo(const char content[])
 	int i, newi = 0;
 	char new[512];
 	for (i = 0; i < strlen(content);) {
+		if (content[i] == '>')
+			break;
 		new[newi++] = content[i];
 		if (content[i] == ' ')
 			for (; content[i] == ' '; i++);
@@ -35,27 +37,60 @@ void cmd_echo(const char content[])
 			i++;
 	}
 	new[newi] = '\0';
-	shell_print_string(new, 7);
+	if (content[i] == '>') {
+		if (content[i + 1] == '>') {
+			char filename[52] = {0};
+			int fi = 0;
+			for (i = i + 2; content[i] == ' '; i++);
+			for (; content[i] != '\n'; i++)
+				filename[fi++] = content[i];
+			int fp;
+			fp = file_open(filename, "w");
+			file_seek(fp, 0, SEEK_END);
+			file_write(new, strlen(new), fp);
+			file_close(fp);
+		} else {
+			char filename[52] = {0};
+			int fi = 0;
+			for (i = i + 1; content[i] == ' '; i++);
+			for (; content[i] != '\n'; i++)
+				filename[fi++] = content[i];
+			int fp;
+			fp = file_open(filename, "w");
+			file_seek(fp, 0, SEEK_SET);
+			file_write(new, strlen(new) + 1, fp);
+			file_close(fp);
+
+		}
+	} else
+		shell_print_string(new, 7);
 }
-void cmd_cat(char const content[])
+
+bool cat_r = false;
+void cmd_cat(char const content[], int fp_out)
 {
 	char new[50] = {0};
 	int i, sz, fp;
-	for (i = 0; content[i] != ' ' && content[i] != '\n'; i++)
+	for (i = 0; content[i] != ' ' && content[i] != '\n' && content[i] != '>'; i++)
 		new[i] = content[i];
 	new[i] = 0;
 	fp = file_open(new, "r");
 	char dst[65] = {0};
 	while ((sz = file_read(dst, 64, fp)) == 64)
-		shell_print_string(dst, 7);
+		if (cat_r)
+			file_write(dst, 64, fp_out);
+		else
+			shell_print_string(dst, 7);
 	dst[sz] = 0;
-	shell_print_string(dst, 7);
-	shell_print_string("\n", 7);
+	if (cat_r)
+		file_write(dst, 64, fp_out);
+	else
+		shell_print_string(dst, 7);
 	file_close(fp);
-	if (content[i] == '\n')
-		return;
 	for (; content[i] == ' '; i ++);
-	cmd_cat((char *)content + i);
+	if (content[i] == '\n' || content[i] == 0 || content[i] == '>')
+		return;
+	cmd_cat((char *)content + i, fp_out);
 }
 
 void cmd_run(const char content[])
@@ -92,9 +127,9 @@ void cmd_touch(const char content[])
 	file_close(fp);
 }
 
-void cmd_handler(const char cmd[])
+void cmd_handler(char cmd[])
 {
-	int i = 0;
+	int i = 0, j;
 	for (; cmd[i] == ' '; i ++);
 	if (cmd[i] == 'l' && cmd[i + 1] == 's') {
 		ls_a = false;
@@ -107,8 +142,35 @@ void cmd_handler(const char cmd[])
 		for (i = i + 4; cmd[i] == ' '; i ++);
 		cmd_echo(cmd + i);
 	} else if (cmd[i] == 'c' && cmd[i + 1] == 'a' && cmd[i + 2] == 't') {
-		for (i = i + 4; cmd[i] == ' '; i ++);
-		cmd_cat(cmd + i);
+		cat_r = false;
+		int fp;
+		for (j = 0; j < strlen(cmd); j++)
+			if (cmd[j] == '>') {
+				cat_r = true;
+				if (cmd[j + 1] == '>') {
+					char filename[52] = {0};
+					int fi = 0;
+					for (j = j + 2; cmd[j] == ' '; j++);
+					for (; cmd[j] != '\n'; j++)
+						filename[fi++] = cmd[j];
+					fp = file_open(filename, "w");
+					file_seek(fp, 0, SEEK_END);
+				} else {
+					char filename[52] = {0};
+					int fi = 0;
+					for (j = j + 1; cmd[j] == ' '; j++);
+					for (; cmd[j] != '\n'; j++)
+						filename[fi++] = cmd[j];
+					fp = file_open(filename, "w");
+					file_seek(fp, 0, SEEK_SET);
+				}
+				break;
+			}
+		for (i = i + 3; cmd[i] == ' '; i ++);
+		cmd_cat(cmd + i, fp);
+		if (cat_r)
+			file_close(fp);
+		shell_print_string("\n", 7);
 	} else if (cmd[i] == 'r' && cmd[i + 1] == 'u' && cmd[i + 2] == 'n') {
 		for (i = i + 3; cmd[i] == ' '; i ++);
 		cmd_run(cmd + i);

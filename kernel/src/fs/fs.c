@@ -109,7 +109,7 @@ int sys_fwrite(void *src, int size, int index)
 	}
 	curfcb->fcb_seek = seek;
 	bitmap_update();
-	if (end > curfcb->fcb_file_sz) {
+	if (((char*)src)[size - 1] == 0 || end > curfcb->fcb_file_sz) {
 		curfcb->fcb_file_sz = end;
 		for (seek = 0; seek < NR_FILE; seek ++) {
 			if (rootdir.entries[seek].inode_offset == curfcb->fcb_inode_offset) {

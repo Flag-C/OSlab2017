@@ -1,5 +1,5 @@
 const char key_sequence[] = "abcdefghijklmnopqrstuvwxyz1234567890.- \n";
-
+const char shift_key_sequence[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()>_  ";
 int query_key_u(int index);
 int see_if_any_key_pressed();
 
@@ -43,3 +43,4 @@ int see_if_any_key_pressed();
 #define KEY_HYPHEN 37
 #define KEY_SPACE 38
 #define KEY_ENTER 39
+#define KEY_SHIFT 40
